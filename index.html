@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Countdown To Excellence | Pakistan</title>
+    <style>
+        /* ============================================================
+           GOOGLE FONTS IMPORT
+           ============================================================ */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        /* ============================================================
+           CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+           ============================================================ */
+        :root {
+            --neon-green: #00ff55;
+            --neon-green-dim: #00cc44;
+            --neon-green-dark: #008833;
+            --deep-green: #021a0d;
+            --deeper-green: #010f07;
+            --abyss: #010804;
+            --tech-glow: rgba(0, 255, 85, 0.65);
+            --tech-glow-soft: rgba(0, 255, 85, 0.3);
+            --tech-glow-strong: rgba(0, 255, 85, 0.9);
+            --white-soft: #e8e8e8;
+            --golden: #d4a843;
+            --golden-glow: rgba(212, 168, 67, 0.6);
+            --crescent-white: #f5f5f0;
+            --danger-red: #ff3344;
+            --sky-top: #0a1a2e;
+            --sky-mid: #152535;
+            --sky-low: #1a2a20;
+            --mountain-far: #0d1f14;
+            --mountain-mid: #091a0f;
+            --mountain-near: #05100a;
+            --flag-green: #01411c;
+            --flag-white-stripe: #ffffff;
+        }
+
+        /* ============================================================
+           GLOBAL RESET & BASE STYLES
+           ============================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body,
+        html {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background-color: var(--abyss);
+            overflow: hidden;
+            font-family: 'Rajdhani', sans-serif;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================================
+           MAIN APP CONTAINER
+           ============================================================ */
+        #app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* ============================================================
+           CANVAS LAYERS (MULTIPLE FOR DEPTH)
+           ============================================================ */
+        .canvas-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        #canvas-sky {
+            z-index: 2;
+        }
+        #canvas-mountains {
+            z-index: 3;
+        }
+        #canvas-effects {
+            z-index: 4;
+        }
+        #canvas-particles {
+            z-index: 5;
+        }
+        #canvas-birds {
+            z-index: 6;
+        }
+        #canvas-hud-overlay {
+            z-index: 11;
+            pointer-events: none;
+        }
+
+        /* ============================================================
+           CSS SKY GRADIENT LAYER
+           ============================================================ */
+        .sky-gradient-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg,
+                    #020d1a 0%, #051525 8%, #0a1a30 18%,
+                    #0d1c2a 28%, #0f1e25 38%, #11201e 48%,
+                    #0e1d18 58%, #0a1812 68%, #06120c 80%,
+                    #030e08 92%, #010804 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Atmospheric haze overlay */
+        .atmosphere-haze {
+            position: absolute;
+            top: 25%;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: radial-gradient(ellipse at 50% 60%, rgba(20, 40, 30, 0.35) 0%, transparent 70%);
+            z-index: 2;
+            pointer-events: none;
+            animation: haze-pulse 8s ease-in-out infinite;
+        }
+        @keyframes haze-pulse {
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Light rays from top */
+        .light-rays {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 60%;
+            background: radial-gradient(ellipse at 50% 0%,
+                    rgba(0, 255, 85, 0.04) 0%, rgba(0, 200, 60, 0.02) 30%, transparent 65%);
+            z-index: 2;
+            pointer-events: none;
+            animation: ray-shift 12s ease-in-out infinite;
+        }
+        @keyframes ray-shift {
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: translateX(-50%) scaleX(1);
+            }
+            25% {
+                opacity: 0.9;
+                transform: translateX(-48%) scaleX(1.15);
+            }
+            50% {
+                opacity: 0.5;
+                transform: translateX(-52%) scaleX(0.9);
+            }
+            75% {
+                opacity: 0.85;
+                transform: translateX(-50%) scaleX(1.1);
+            }
+        }
+
+        /* ============================================================
+           TOP VISUALS CONTAINER (FLAG & MINAR)
+           ============================================================ */
+        .top-visuals {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 48%;
+            z-index: 7;
+            pointer-events: none;
+        }
+
+        /* ---- Waving Pakistan Flag ---- */
+        .flag-container {
+            position: absolute;
+            top: 3%;
+            left: 2%;
+            width: 50%;
+            max-width: 420px;
+            height: 75%;
+            perspective: 1200px;
+            filter: drop-shadow(8px 12px 30px rgba(0, 0, 0, 0.85));
+            z-index: 8;
+        }
+        .flag-wrapper {
+            width: 100%;
+            height: 100%;
+            transform-origin: left center;
+            animation: flag-wave-realistic 5s ease-in-out infinite alternate;
+            transform-style: preserve-3d;
+        }
+        .flag-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: auto;
+        }
+        @keyframes flag-wave-realistic {
+            0% {
+                transform: rotateY(-5deg) rotateX(3deg) skewY(1deg);
+            }
+            20% {
+                transform: rotateY(-15deg) rotateX(-1deg) skewY(-0.5deg);
+            }
+            40% {
+                transform: rotateY(-8deg) rotateX(4deg) skewY(1.5deg);
+            }
+            60% {
+                transform: rotateY(-20deg) rotateX(-3deg) skewY(-1deg);
+            }
+            80% {
+                transform: rotateY(-10deg) rotateX(2deg) skewY(0.8deg);
+            }
+            100% {
+                transform: rotateY(-17deg) rotateX(-2deg) skewY(-1.2deg);
+            }
+        }
+
+        /* Flag pole glow */
+        .flag-pole-glow {
+            position: absolute;
+            left: 1.5%;
+            top: 3%;
+            width: 4px;
+            height: 75%;
+            background: linear-gradient(180deg,
+                    rgba(0, 255, 85, 0.6) 0%, rgba(0, 200, 50, 0.3) 40%,
+                    rgba(0, 150, 40, 0.1) 70%, transparent 100%);
+            border-radius: 2px;
+            z-index: 7;
+            pointer-events: none;
+            animation: pole-flicker 3s ease-in-out infinite;
+        }
+        @keyframes pole-flicker {
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ---- Minar-e-Pakistan ---- */
+        .minar-container {
+            position: absolute;
+            top: 1%;
+            right: 3%;
+            width: 130px;
+            max-width: 18vw;
+            height: 88%;
+            background-image: url("min.png");
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: contain;
+            filter: drop-shadow(0 0 25px var(--tech-glow-soft)) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.9));
+            opacity: 0.95;
+            z-index: 8;
+            animation: minar-subtle-glow 4s ease-in-out infinite;
+        }
+        @keyframes minar-subtle-glow {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 25px var(--tech-glow-soft)) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.9));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px var(--tech-glow)) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.95));
+            }
+        }
+
+        /* Minar base accent */
+        .minar-base-accent {
+            position: absolute;
+            right: 3%;
+            bottom: 10%;
+            width: 130px;
+            max-width: 18vw;
+            height: 15px;
+            background: radial-gradient(ellipse, rgba(0, 255, 85, 0.4) 0%, transparent 70%);
+            z-index: 7;
+            pointer-events: none;
+            animation: base-glow-pulse 4s ease-in-out infinite;
+        }
+        @keyframes base-glow-pulse {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.9;
+            }
+        }
+
+        /* ============================================================
+           HUD INTERFACE (FOREGROUND)
+           ============================================================ */
+        .hud-interface {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 750px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 1.5vh;
+            pointer-events: none;
+        }
+
+        /* ---- Title Section ---- */
+        .title-container {
+            text-align: center;
+            margin-bottom: 6px;
+            position: relative;
+        }
+        .title-container::before,
+        .title-container::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+            opacity: 0.7;
+        }
+        .title-container::before {
+            left: -70px;
+        }
+        .title-container::after {
+            right: -70px;
+        }
+
+        h1.countdown-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 4.5vw, 3.8rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 4px;
+            line-height: 1;
+            text-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.95),
+                0 0 30px rgba(255, 255, 255, 0.15),
+                0 0 60px rgba(0, 255, 85, 0.1);
+            animation: title-breath 6s ease-in-out infinite;
+        }
+        @keyframes title-breath {
+            0%,
+            100% {
+                text-shadow: 0 4px 15px rgba(0, 0, 0, 0.95), 0 0 30px rgba(255, 255, 255, 0.15), 0 0 60px rgba(0, 255, 85, 0.1);
+            }
+            50% {
+                text-shadow: 0 4px 20px rgba(0, 0, 0, 0.95), 0 0 45px rgba(255, 255, 255, 0.25), 0 0 80px rgba(0, 255, 85, 0.2);
+            }
+        }
+
+        h2.excellence-text {
+            font-size: clamp(0.8rem, 1.6vw, 1.35rem);
+            color: var(--neon-green);
+            letter-spacing: 7px;
+            font-weight: 700;
+            margin-top: 2px;
+            text-shadow: 0 0 12px var(--tech-glow), 0 0 25px var(--tech-glow-soft);
+            animation: excellence-flicker 7s ease-in-out infinite;
+        }
+        @keyframes excellence-flicker {
+            0%,
+            100% {
+                opacity: 0.9;
+            }
+            30% {
+                opacity: 1;
+            }
+            60% {
+                opacity: 0.85;
+            }
+            85% {
+                opacity: 1;
+            }
+        }
+
+        /* ---- Timer Box ---- */
+        .timer-box {
+            position: relative;
+            background: rgba(1, 15, 7, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(0, 255, 85, 0.45);
+            padding: 18px 35px;
+            display: flex;
+            gap: 28px;
+            clip-path: polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px),
+                    calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px), 0 22px);
+            box-shadow:
+                0 0 30px rgba(0, 255, 85, 0.2) inset,
+                0 0 50px rgba(0, 255, 85, 0.08),
+                0 10px 40px rgba(0, 0, 0, 0.7);
+            margin-top: 4px;
+        }
+        .timer-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid var(--neon-green);
+            clip-path: polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px),
+                    calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px), 0 22px);
+            pointer-events: none;
+            box-shadow:
+                0 0 18px var(--tech-glow),
+                0 0 40px var(--tech-glow-soft);
+            animation: border-pulse 3s ease-in-out infinite;
+        }
+        @keyframes border-pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 18px var(--tech-glow), 0 0 40px var(--tech-glow-soft);
+            }
+            50% {
+                box-shadow: 0 0 30px var(--tech-glow-strong), 0 0 60px var(--tech-glow);
+            }
+        }
+
+        /* Scan line effect on timer */
+        .timer-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+            opacity: 0;
+            animation: scan-line 4s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes scan-line {
+            0% {
+                top: 0;
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        .time-segment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+        }
+        .time-segment:not(:last-child)::after {
+            content: ':';
+            position: absolute;
+            right: -16px;
+            top: 10%;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--tech-glow);
+            animation: colon-blink 1s step-end infinite;
+        }
+        @keyframes colon-blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1;
+            color: #ffffff;
+            text-shadow:
+                0 0 14px rgba(0, 255, 85, 0.55),
+                0 0 30px rgba(0, 255, 85, 0.25),
+                0 0 50px rgba(0, 255, 85, 0.1);
+            letter-spacing: 2px;
+            transition: text-shadow 0.3s;
+        }
+        .number.flash {
+            text-shadow:
+                0 0 20px rgba(0, 255, 85, 0.9),
+                0 0 40px rgba(0, 255, 85, 0.5),
+                0 0 70px rgba(0, 255, 85, 0.3);
+        }
+
+        .label {
+            font-size: clamp(0.6rem, 1vw, 0.8rem);
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: #c0c0c0;
+            margin-top: 5px;
+            text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .remaining-badge {
+            position: absolute;
+            bottom: -13px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #011409;
+            border: 1px solid var(--neon-green);
+            padding: 2px 20px;
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            color: white;
+            box-shadow: 0 0 10px var(--tech-glow-soft);
+            clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 100%, 0 100%);
+            z-index: 3;
+            font-weight: 600;
+        }
+
+        /* ---- Info Text ---- */
+        .info-text {
+            margin-top: 18px;
+            text-align: center;
+            z-index: 3;
+        }
+        .info-text p {
+            font-size: clamp(0.85rem, 1.4vw, 1.2rem);
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin: 2px 0;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+            line-height: 1.3;
+        }
+        .green-highlight {
+            color: var(--neon-green);
+            font-style: italic;
+            text-shadow: 0 0 10px var(--tech-glow), 0 0 20px var(--tech-glow-soft);
+            font-weight: 700;
+        }
+        .bracket-text {
+            color: #aaaaaa;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 3px;
+            font-size: 0.9em;
+        }
+
+        /* ---- Independence Badge ---- */
+        .independence-badge {
+            margin-top: 10px;
+            border: 1px solid rgba(0, 255, 85, 0.55);
+            padding: 7px 24px;
+            text-align: center;
+            clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
+            background: rgba(0, 20, 10, 0.75);
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 0 18px rgba(0, 255, 85, 0.15);
+        }
+        .independence-badge::before,
+        .independence-badge::after {
+            content: "★";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--neon-green);
+            font-size: 10px;
+            text-shadow: 0 0 6px var(--neon-green), 0 0 14px var(--tech-glow);
+            animation: star-twinkle 2s ease-in-out infinite;
+        }
+        .independence-badge::before {
+            top: -9px;
+        }
+        .independence-badge::after {
+            bottom: -9px;
+            animation-delay: 1s;
+        }
+        @keyframes star-twinkle {
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1.3);
+            }
+        }
+
+        .this-week {
+            font-size: 0.58rem;
+            letter-spacing: 3px;
+            color: #999;
+            display: block;
+        }
+        .ind-week-title {
+            font-size: clamp(0.78rem, 1.3vw, 1rem);
+            font-weight: 700;
+            color: var(--neon-green);
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px var(--tech-glow-soft);
+        }
+
+        /* ---- August Block ---- */
+        .august-block {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 3;
+        }
+        .fourteen-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .fourteen {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+            font-weight: 900;
+            line-height: 0.8;
+            color: white;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.45), 0 0 35px rgba(0, 255, 85, 0.2);
+        }
+        .mini-crescent {
+            width: 26px;
+            height: 26px;
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: -5px 5px 0 0 var(--crescent-white);
+            position: relative;
+            transform: rotate(-45deg) translateY(-2px);
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+        }
+        .mini-crescent::after {
+            content: "★";
+            position: absolute;
+            top: 13px;
+            left: -3px;
+            color: var(--crescent-white);
+            font-size: 10px;
+            transform: rotate(45deg);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        }
+        .august-text {
+            color: var(--neon-green);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 7px;
+            margin-top: 1px;
+            text-shadow: 0 0 8px var(--tech-glow-soft);
+        }
+        .urdu-text {
+            margin-top: 4px;
+            font-size: 1.1rem;
+            color: white;
+            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--tech-glow-soft);
+            letter-spacing: 1px;
+            font-family: 'Noto Nastaliq Urdu', 'Arial', sans-serif;
+            direction: rtl;
+        }
+
+        /* ---- Global Time Indicator ---- */
+        .global-time-indicator {
+            margin-top: 6px;
+            font-size: 0.55rem;
+            letter-spacing: 2px;
+            color: #666;
+            text-align: center;
+            z-index: 3;
+        }
+        .global-time-indicator span {
+            color: var(--neon-green-dim);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* ============================================================
+           CORNER TECHNICAL GRAPHICS
+           ============================================================ */
+        .corner-graphic {
+            position: absolute;
+            bottom: 12px;
+            opacity: 0.8;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px var(--tech-glow-soft));
+            z-index: 10;
+            width: 110px;
+            animation: corner-rotate 20s linear infinite;
+        }
+        .cg-left {
+            left: 15px;
+            animation-direction: normal;
+        }
+        .cg-right {
+            right: 15px;
+            animation-direction: reverse;
+        }
+        @keyframes corner-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ============================================================
+           RESPONSIVE ADJUSTMENTS
+           ============================================================ */
+        @media (max-width: 600px) {
+            .flag-container {
+                width: 42%;
+                top: 4%;
+                left: 1%;
+            }
+            .minar-container {
+                width: 90px;
+                right: 2%;
+                top: 3%;
+            }
+            .minar-base-accent {
+                width: 90px;
+                right: 2%;
+            }
+            .timer-box {
+                padding: 12px 18px;
+                gap: 16px;
+            }
+            .time-segment:not(:last-child)::after {
+                right: -10px;
+                font-size: 1.3rem;
+            }
+            .corner-graphic {
+                width: 70px;
+                bottom: 8px;
+            }
+            .cg-left {
+                left: 8px;
+            }
+            .cg-right {
+                right: 8px;
+            }
+            .title-container::before,
+            .title-container::after {
+                width: 30px;
+            }
+            .title-container::before {
+                left: -35px;
+            }
+            .title-container::after {
+                right: -35px;
+            }
+            .flag-pole-glow {
+                width: 2px;
+                left: 1%;
+            }
+        }
+        @media (max-width: 380px) {
+            .flag-container {
+                width: 38%;
+                top: 5%;
+            }
+            .minar-container {
+                width: 65px;
+                right: 1%;
+            }
+            .minar-base-accent {
+                width: 65px;
+                right: 1%;
+            }
+            .timer-box {
+                padding: 10px 12px;
+                gap: 10px;
+            }
+            .number {
+                font-size: 1.7rem;
+            }
+            .time-segment:not(:last-child)::after {
+                right: -7px;
+                font-size: 1rem;
+            }
+            .remaining-badge {
+                font-size: 0.6rem;
+                padding: 2px 12px;
+                letter-spacing: 3px;
+            }
+        }
+        @media (min-width: 1200px) {
+            .flag-container {
+                width: 38%;
+                max-width: 500px;
+                left: 4%;
+            }
+            .minar-container {
+                width: 160px;
+                max-width: 14vw;
+                right: 5%;
+            }
+            .minar-base-accent {
+                width: 160px;
+                max-width: 14vw;
+                right: 5%;
+            }
+            .corner-graphic {
+                width: 140px;
+            }
+        }
+
+        /* ============================================================
+           COUNTDOWN END CELEBRATION OVERLAY
+           ============================================================ */
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 1.5s ease-in;
+        }
+        .celebration-overlay.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    MAIN APP CONTAINER
+    ============================================================ -->
+    <div id="app-container">
+
+        <!-- CSS Sky Gradient -->
+        <div class="sky-gradient-layer"></div>
+        <div class="atmosphere-haze"></div>
+        <div class="light-rays"></div>
+
+        <!-- Canvas Layers for Dynamic Graphics -->
+        <canvas id="canvas-sky" class="canvas-layer"></canvas>
+        <canvas id="canvas-mountains" class="canvas-layer"></canvas>
+        <canvas id="canvas-effects" class="canvas-layer"></canvas>
+        <canvas id="canvas-particles" class="canvas-layer"></canvas>
+        <canvas id="canvas-birds" class="canvas-layer"></canvas>
+        <canvas id="canvas-hud-overlay" class="canvas-layer"></canvas>
+
+        <!-- Flag Pole Glow -->
+        <div class="flag-pole-glow"></div>
+
+        <!-- Top Visual Elements -->
+        <div class="top-visuals">
+            <div class="flag-container">
+                <div class="flag-wrapper">
+                    <img src="pak.png" alt="Pakistan Flag" loading="eager">
+                </div>
+            </div>
+            <div class="minar-container"></div>
+            <div class="minar-base-accent"></div>
+        </div>
+
+        <!-- Foreground HUD Interface -->
+        <div class="hud-interface">
+            <div class="title-container">
+                <h1 class="countdown-text">COUNTDOWN</h1>
+                <h2 class="excellence-text">TO EXCELLENCE</h2>
+            </div>
+
+            <div class="timer-box">
+                <div class="time-segment">
+                    <span class="number" id="t-days">00</span>
+                    <span class="label">DAYS</span>
+                </div>
+                <div class="time-segment">
+                    <span class="number" id="t-hours">00</span>
+                    <span class="label">HOURS</span>
+                </div>
+                <div class="time-segment">
+                    <span class="number" id="t-minutes">00</span>
+                    <span class="label">MINUTES</span>
+                </div>
+                <div class="time-segment">
+                    <span class="number" id="t-seconds">00</span>
+                    <span class="label">SECONDS</span>
+                </div>
+                <div class="remaining-badge">REMAINING</div>
+            </div>
+
+            <div class="info-text">
+                <p><span class="bracket-text">&gt;</span> SARA <span class="green-highlight">NOVAS</span> READY HO JAYIEN <span class="bracket-text">&lt;</span></p>
+                <p>FIRST WEEK TEST KA LIYA.</p>
+            </div>
+
+            <div class="independence-badge">
+                <span class="this-week">THIS WEEK</span>
+                <span class="ind-week-title">INDEPENDENCE WEEK</span>
+            </div>
+
+            <div class="august-block">
+                <div class="fourteen-container">
+                    <span class="fourteen">14</span>
+                    <div class="mini-crescent"></div>
+                </div>
+                <span class="august-text">AUGUST</span>
+                <span class="urdu-text">میرا پاکستان - میری پہچان</span>
+            </div>
+
+            <div class="global-time-indicator">
+                Target: <span>10 AUG 2026 · 08:00 PKT (+05:00)</span> · Universal Sync
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Left Tech Element -->
+    <svg class="corner-graphic cg-left" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <radialGradient id="glowLeft" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#00ff55" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#00ff55" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="60" fill="url(#glowLeft)" />
+        <path d="M20,150 L180,150 L160,100 L40,100 Z" fill="none" stroke="#00ff55" stroke-width="2.5"/>
+        <circle cx="100" cy="125" r="20" fill="none" stroke="#00ff55" stroke-dasharray="5 3" stroke-width="1.5"/>
+        <path d="M100,114 A 11,11 0 1,0 111,125 Z" fill="#00ff55" transform="rotate(-30 100 125)"/>
+        <circle cx="100" cy="125" r="4" fill="#00ff55" />
+        <line x1="20" y1="150" x2="40" y2="100" stroke="#00ff55" stroke-width="1" opacity="0.5"/>
+        <line x1="180" y1="150" x2="160" y2="100" stroke="#00ff55" stroke-width="1" opacity="0.5"/>
+    </svg>
+
+    <!-- Bottom Right Tech Element -->
+    <svg class="corner-graphic cg-right" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <radialGradient id="glowRight" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#00ff55" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#00ff55" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="60" fill="url(#glowRight)" />
+        <polygon points="100,28 162,64 162,136 100,172 38,136 38,64" fill="none" stroke="#00ff55" stroke-width="2.5"/>
+        <circle cx="100" cy="100" r="28" fill="none" stroke="#00ff55" stroke-width="1.5" stroke-dasharray="6 3"/>
+        <path d="M100,86 A 14,14 0 1,0 114,100 Z" fill="#00ff55" transform="rotate(-40 100 100)"/>
+        <circle cx="100" cy="100" r="5" fill="#00ff55" />
+        <line x1="38" y1="64" x2="70" y2="50" stroke="#00ff55" stroke-width="0.8" opacity="0.5"/>
+        <line x1="162" y1="64" x2="130" y2="50" stroke="#00ff55" stroke-width="0.8" opacity="0.5"/>
+    </svg>
+
+    <!-- Celebration Overlay -->
+    <div class="celebration-overlay" id="celebration-overlay"></div>
+
+    <!-- ============================================================
+    JAVASCRIPT ENGINE
+    ============================================================ -->
+    <script>
+        (function() {
+            // ============================================================
+            // UNIVERSAL COUNTDOWN LOGIC
+            // Target: 10 August 2026, 08:00 AM Pakistan Standard Time (UTC+05:00)
+            // Using ISO 8601 with explicit timezone offset ensures global sync.
+            // The .getTime() method returns UTC milliseconds, so the diff
+            // calculation is identical for all users worldwide.
+            // ============================================================
+            const TARGET_DATE_ISO = "2026-08-10T08:00:00+05:00";
+            const targetDateUTC = new Date(TARGET_DATE_ISO).getTime();
+
+            // DOM references for countdown digits
+            const daysEl = document.getElementById('t-days');
+            const hoursEl = document.getElementById('t-hours');
+            const minutesEl = document.getElementById('t-minutes');
+            const secondsEl = document.getElementById('t-seconds');
+            const celebrationOverlay = document.getElementById('celebration-overlay');
+
+            let countdownReachedZero = false;
+            let lastSecondValue = -1;
+
+            /**
+             * Updates the countdown display.
+             * Called every 250ms for smoothness, but only updates DOM when seconds change.
+             */
+            function updateCountdown() {
+                const nowUTC = Date.now(); // Universal UTC timestamp
+                let diffMs = targetDateUTC - nowUTC;
+
+                // Clamp to zero (no negative values)
+                if (diffMs < 0) {
+                    diffMs = 0;
+                    if (!countdownReachedZero) {
+                        countdownReachedZero = true;
+                        triggerCelebration();
+                    }
+                }
+
+                const totalSeconds = Math.floor(diffMs / 1000);
+                const days = Math.floor(totalSeconds / 86400);
+                const hours = Math.floor((totalSeconds % 86400) / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                // Only update DOM when the second value changes (reduces repaints)
+                if (seconds !== lastSecondValue || countdownReachedZero) {
+                    daysEl.innerText = days.toString().padStart(2, '0');
+                    hoursEl.innerText = hours.toString().padStart(2, '0');
+                    minutesEl.innerText = minutes.toString().padStart(2, '0');
+                    secondsEl.innerText = seconds.toString().padStart(2, '0');
+
+                    // Flash effect on seconds change
+                    secondsEl.classList.add('flash');
+                    setTimeout(() => secondsEl.classList.remove('flash'), 150);
+
+                    lastSecondValue = seconds;
+                }
+
+                // If countdown has reached zero, keep displaying zeros
+                if (countdownReachedZero && diffMs === 0) {
+                    daysEl.innerText = '00';
+                    hoursEl.innerText = '00';
+                    minutesEl.innerText = '00';
+                    secondsEl.innerText = '00';
+                }
+            }
+
+            /**
+             * Triggers celebration effects when countdown reaches zero.
+             */
+            function triggerCelebration() {
+                celebrationOverlay.classList.add('active');
+                // Create a burst of celebration particles
+                if (typeof createCelebrationBurst === 'function') {
+                    createCelebrationBurst();
+                }
+                // Flash the timer box
+                const timerBox = document.querySelector('.timer-box');
+                if (timerBox) {
+                    timerBox.style.boxShadow =
+                        '0 0 60px rgba(0,255,85,0.8), 0 0 120px rgba(0,255,85,0.5), 0 0 200px rgba(0,255,85,0.3)';
+                    setTimeout(() => {
+                        timerBox.style.boxShadow = '';
+                    }, 3000);
+                }
+            }
+
+            // Initial call and set interval (runs every 250ms for responsiveness)
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 250);
+
+            // ============================================================
+            // CANVAS ENGINE - MULTI-LAYER RENDERING SYSTEM
+            // ============================================================
+
+            // ---- Canvas References ----
+            const canvasSky = document.getElementById('canvas-sky');
+            const ctxSky = canvasSky.getContext('2d', { alpha: true });
+            const canvasMountains = document.getElementById('canvas-mountains');
+            const ctxMountains = canvasMountains.getContext('2d', { alpha: true });
+            const canvasEffects = document.getElementById('canvas-effects');
+            const ctxEffects = canvasEffects.getContext('2d', { alpha: true });
+            const canvasParticles = document.getElementById('canvas-particles');
+            const ctxParticles = canvasParticles.getContext('2d', { alpha: true });
+            const canvasBirds = document.getElementById('canvas-birds');
+            const ctxBirds = canvasBirds.getContext('2d', { alpha: true });
+            const canvasHUD = document.getElementById('canvas-hud-overlay');
+            const ctxHUD = canvasHUD.getContext('2d', { alpha: true });
+
+            // ---- Global State ----
+            let W, H;
+            let globalTime = 0;
+            let animationFrameId;
+
+            // ============================================================
+            // STARFIELD SYSTEM (Canvas Sky Layer)
+            // ============================================================
+            class Star {
+                constructor() {
+                    this.reset(true);
+                }
+                reset(initial = false) {
+                    this.x = Math.random() * W;
+                    this.y = initial ? Math.random() * H * 0.7 : Math.random() * H * 0.55;
+                    this.baseSize = Math.random() * 2.2 + 0.3;
+                    this.size = this.baseSize;
+                    this.twinkleSpeed = Math.random() * 0.03 + 0.008;
+                    this.twinkleOffset = Math.random() * Math.PI * 2;
+                    this.opacity = Math.random() * 0.8 + 0.2;
+                    this.hue = Math.random() < 0.12 ?
+                        (Math.random() < 0.5 ? 40 : 200) // Some golden or bluish stars
+                        :
+                        120; // Most are greenish-white
+                    this.saturation = Math.random() < 0.12 ? 30 : 5;
+                }
+                update(time) {
+                    this.size = this.baseSize + Math.sin(time * this.twinkleSpeed + this.twinkleOffset) *
+                        this.baseSize * 0.6;
+                    this.opacity = 0.3 + Math.abs(Math.sin(time * this.twinkleSpeed + this.twinkleOffset)) * 0.7;
+                }
+                draw(ctx) {
+                    const alpha = Math.max(0.08, this.opacity);
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, Math.max(0.2, this.size), 0, Math.PI * 2);
+                    const color =
+                        `hsla(${this.hue}, ${this.saturation}%, 85%, ${alpha})`;
+                    ctx.fillStyle = color;
+                    ctx.shadowBlur = this.size * 3;
+                    ctx.shadowColor = `hsla(${this.hue}, 40%, 70%, ${alpha * 0.7})`;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            const stars = [];
+            const STAR_COUNT = 180;
+
+            function initStars() {
+                stars.length = 0;
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    stars.push(new Star());
+                }
+            }
+
+            function renderSky(time) {
+                ctxSky.clearRect(0, 0, W, H);
+                // Draw subtle gradient at top
+                const skyGrad = ctxSky.createRadialGradient(W * 0.3, H * 0.08, W * 0.1, W * 0.5, H * 0.4, W * 1.1);
+                skyGrad.addColorStop(0, 'rgba(8, 20, 35, 0.6)');
+                skyGrad.addColorStop(0.5, 'rgba(4, 14, 22, 0.3)');
+                skyGrad.addColorStop(1, 'rgba(1, 8, 4, 0)');
+                ctxSky.fillStyle = skyGrad;
+                ctxSky.fillRect(0, 0, W, H);
+
+                stars.forEach(star => {
+                    star.update(time);
+                    star.draw(ctxSky);
+                });
+
+                // Draw crescent moon
+                drawCrescentMoon(ctxSky, time);
+            }
+
+            /**
+             * Draws a glowing crescent moon in the upper portion of the sky.
+             */
+            function drawCrescentMoon(ctx, time) {
+                const moonX = W * 0.78;
+                const moonY = H * 0.13;
+                const moonRadius = Math.min(W, H) * 0.06;
+
+                // Moon glow
+                const glowGrad = ctx.createRadialGradient(moonX, moonY, moonRadius * 0.7, moonX, moonY, moonRadius * 3.5);
+                glowGrad.addColorStop(0, 'rgba(255, 252, 240, 0.35)');
+                glowGrad.addColorStop(0.4, 'rgba(255, 250, 230, 0.12)');
+                glowGrad.addColorStop(1, 'rgba(255, 240, 200, 0)');
+                ctx.fillStyle = glowGrad;
+                ctx.beginPath();
+                ctx.arc(moonX, moonY, moonRadius * 3.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Crescent shape (outer circle minus inner circle offset)
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(moonX + moonRadius * 0.35, moonY - moonRadius * 0.2, moonRadius * 0.85, 0, Math.PI * 2);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+                ctx.restore();
+
+                // Draw the crescent
+                ctx.beginPath();
+                ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#fafaf0';
+                ctx.fill();
+
+                // Cut out inner portion
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(moonX + moonRadius * 0.35, moonY - moonRadius * 0.2, moonRadius * 0.82, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // Subtle shimmer on moon edge
+                ctx.beginPath();
+                ctx.arc(moonX - moonRadius * 0.15, moonY - moonRadius * 0.25, moonRadius * 0.2, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                ctx.fill();
+            }
+
+            // ============================================================
+            // MOUNTAIN SYSTEM (Canvas Mountains Layer)
+            // ============================================================
+            class MountainRange {
+                constructor(points, color, yOffset, opacity) {
+                    this.points = points; // Array of {x, y} ratios
+                    this.color = color;
+                    this.yOffset = yOffset;
+                    this.opacity = opacity;
+                    this.resolvedPoints = [];
+                }
+                resolvePoints(w, h) {
+                    this.resolvedPoints = this.points.map(p => ({
+                        x: p.x * w,
+                        y: p.y * h + this.yOffset * h
+                    }));
+                }
+                draw(ctx, w, h) {
+                    if (this.resolvedPoints.length < 3) return;
+                    ctx.beginPath();
+                    ctx.moveTo(this.resolvedPoints[0].x, this.resolvedPoints[0].y);
+                    for (let i = 1; i < this.resolvedPoints.length; i++) {
+                        ctx.lineTo(this.resolvedPoints[i].x, this.resolvedPoints[i].y);
+                    }
+                    ctx.lineTo(w, h);
+                    ctx.lineTo(0, h);
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            const mountainRanges = [];
+            const MOUNTAIN_DEFINITIONS = [{
+                points: [
+                    { x: 0, y: 0.62 }, { x: 0.08, y: 0.48 }, { x: 0.18, y: 0.55 }, { x: 0.28, y: 0.38 },
+                    { x: 0.38, y: 0.5 }, { x: 0.48, y: 0.32 }, { x: 0.58, y: 0.44 }, { x: 0.7, y: 0.35 },
+                    { x: 0.8, y: 0.5 }, { x: 0.9, y: 0.4 }, { x: 0.95, y: 0.48 }, { x: 1, y: 0.42 }
+                ],
+                color: '#0b1f15',
+                yOffset: 0.05,
+                opacity: 0.85
+            }, {
+                points: [
+                    { x: 0, y: 0.72 }, { x: 0.1, y: 0.58 }, { x: 0.22, y: 0.65 }, { x: 0.35, y: 0.5 },
+                    { x: 0.45, y: 0.6 }, { x: 0.55, y: 0.45 }, { x: 0.65, y: 0.55 }, { x: 0.78, y: 0.48 },
+                    { x: 0.88, y: 0.58 }, { x: 1, y: 0.5 }
+                ],
+                color: '#071a10',
+                yOffset: 0.08,
+                opacity: 0.9
+            }, {
+                points: [
+                    { x: 0, y: 0.8 }, { x: 0.15, y: 0.68 }, { x: 0.3, y: 0.74 }, { x: 0.5, y: 0.62 },
+                    { x: 0.7, y: 0.7 }, { x: 0.85, y: 0.64 }, { x: 1, y: 0.68 }
+                ],
+                color: '#041208',
+                yOffset: 0.1,
+                opacity: 0.95
+            }];
+
+            function initMountains() {
+                mountainRanges.length = 0;
+                MOUNTAIN_DEFINITIONS.forEach(def => {
+                    mountainRanges.push(new MountainRange(def.points, def.color, def.yOffset, def.opacity));
+                });
+            }
+
+            function renderMountains() {
+                ctxMountains.clearRect(0, 0, W, H);
+                mountainRanges.forEach(range => {
+                    range.resolvePoints(W, H);
+                    range.draw(ctxMountains, W, H);
+                });
+
+                // Ground level mist
+                const mistGrad = ctxMountains.createLinearGradient(0, H * 0.75, 0, H);
+                mistGrad.addColorStop(0, 'rgba(1,8,4,0)');
+                mistGrad.addColorStop(0.5, 'rgba(1,8,4,0.6)');
+                mistGrad.addColorStop(1, 'rgba(1,8,4,0.95)');
+                ctxMountains.fillStyle = mistGrad;
+                ctxMountains.fillRect(0, H * 0.75, W, H * 0.25);
+            }
+
+            // ============================================================
+            // ATMOSPHERIC EFFECTS (Canvas Effects Layer)
+            // ============================================================
+            class LightBeam {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * W;
+                    this.width = Math.random() * 60 + 20;
+                    this.opacity = Math.random() * 0.04 + 0.01;
+                    this.height = Math.random() * H * 0.5 + H * 0.15;
+                    this.speed = Math.random() * 0.3 + 0.05;
+                }
+                update() {
+                    this.x += this.speed;
+                    this.opacity += (Math.random() - 0.5) * 0.002;
+                    this.opacity = Math.max(0.005, Math.min(0.06, this.opacity));
+                    if (this.x > W + 100) this.reset();
+                    if (this.x < -100) { this.x = W + 100;
+                        this.reset(); }
+                }
+                draw(ctx) {
+                    const grad = ctx.createLinearGradient(this.x, H * 0.1, this.x, H * 0.1 + this.height);
+                    grad.addColorStop(0, `rgba(0,255,85,${this.opacity * 1.5})`);
+                    grad.addColorStop(0.6, `rgba(0,200,60,${this.opacity})`);
+                    grad.addColorStop(1, 'rgba(0,150,40,0)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(this.x - this.width / 2, H * 0.05, this.width, this.height);
+                }
+            }
+
+            const lightBeams = [];
+            const BEAM_COUNT = 8;
+
+            function initEffects() {
+                lightBeams.length = 0;
+                for (let i = 0; i < BEAM_COUNT; i++) {
+                    lightBeams.push(new LightBeam());
+                }
+            }
+
+            function renderEffects(time) {
+                ctxEffects.clearRect(0, 0, W, H);
+                lightBeams.forEach(beam => {
+                    beam.update();
+                    beam.draw(ctxEffects);
+                });
+
+                // Subtle floating mist patches
+                for (let i = 0; i < 5; i++) {
+                    const mx = (Math.sin(time * 0.02 + i * 1.3) * 0.4 + 0.5) * W;
+                    const my = H * 0.55 + Math.cos(time * 0.015 + i * 0.9) * H * 0.1;
+                    const mistGrad = ctxEffects.createRadialGradient(mx, my, 30, mx, my, 180);
+                    mistGrad.addColorStop(0, 'rgba(180,200,190,0.04)');
+                    mistGrad.addColorStop(1, 'rgba(180,200,190,0)');
+                    ctxEffects.fillStyle = mistGrad;
+                    ctxEffects.beginPath();
+                    ctxEffects.arc(mx, my, 180, 0, Math.PI * 2);
+                    ctxEffects.fill();
+                }
+            }
+
+            // ============================================================
+            // PARTICLE SYSTEM (Canvas Particles Layer)
+            // ============================================================
+            class Firefly {
+                constructor() {
+                    this.reset(true);
+                }
+                reset(initial = false) {
+                    this.x = Math.random() * W;
+                    this.y = initial ? Math.random() * H : H + Math.random() * 80;
+                    this.size = Math.random() * 3 + 1;
+                    this.speedY = -(Math.random() * 0.9 + 0.2);
+                    this.speedX = (Math.random() - 0.5) * 0.4;
+                    this.opacity = Math.random() * 0.7 + 0.2;
+                    this.pulseSpeed = Math.random() * 0.06 + 0.02;
+                    this.pulseOffset = Math.random() * Math.PI * 2;
+                    this.lifespan = Math.random() * 300 + 200;
+                    this.age = 0;
+                }
+                update(time) {
+                    this.y += this.speedY;
+                    this.x += this.speedX + Math.sin(time * 0.02 + this.pulseOffset) * 0.3;
+                    this.age++;
+                    const pulse = Math.sin(time * this.pulseSpeed + this.pulseOffset) * 0.5 + 0.5;
+                    this.currentOpacity = this.opacity * pulse;
+                    if (this.y < -20 || this.age > this.lifespan) this.reset();
+                }
+                draw(ctx) {
+                    const alpha = Math.max(0.05, this.currentOpacity);
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(0,255,85,${alpha})`;
+                    ctx.shadowBlur = this.size * 6;
+                    ctx.shadowColor = `rgba(0,255,85,${alpha * 0.8})`;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Inner bright core
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size * 0.35, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(200,255,220,${alpha * 1.3})`;
+                    ctx.fill();
+                }
+            }
+
+            const fireflies = [];
+            const FIREFLY_COUNT = 55;
+            // Celebration particles (used when countdown ends)
+            let celebrationParticles = [];
+            let isCelebrating = false;
+
+            function initParticles() {
+                fireflies.length = 0;
+                for (let i = 0; i < FIREFLY_COUNT; i++) {
+                    fireflies.push(new Firefly());
+                }
+            }
+
+            function createCelebrationBurst() {
+                isCelebrating = true;
+                celebrationParticles = [];
+                for (let i = 0; i < 200; i++) {
+                    celebrationParticles.push({
+                        x: W / 2,
+                        y: H / 2,
+                        vx: (Math.random() - 0.5) * 12,
+                        vy: (Math.random() - 0.5) * 12 - 4,
+                        size: Math.random() * 5 + 2,
+                        life: 1,
+                        decay: Math.random() * 0.02 + 0.008,
+                        color: Math.random() < 0.5 ? '0,255,85' : '255,255,255',
+                    });
+                }
+            }
+
+            function renderParticles(time) {
+                ctxParticles.clearRect(0, 0, W, H);
+
+                // Regular fireflies
+                fireflies.forEach(ff => {
+                    ff.update(time);
+                    ff.draw(ctxParticles);
+                });
+
+                // Celebration particles
+                if (isCelebrating && celebrationParticles.length > 0) {
+                    celebrationParticles = celebrationParticles.filter(p => p.life > 0);
+                    celebrationParticles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.05; // gravity
+                        p.life -= p.decay;
+                        const alpha = p.life;
+                        ctxParticles.beginPath();
+                        ctxParticles.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                        ctxParticles.fillStyle = `rgba(${p.color},${alpha})`;
+                        ctxParticles.shadowBlur = p.size * 8 * p.life;
+                        ctxParticles.shadowColor = `rgba(${p.color},${alpha * 0.7})`;
+                        ctxParticles.fill();
+                        ctxParticles.shadowBlur = 0;
+                    });
+                    if (celebrationParticles.length === 0) {
+                        isCelebrating = false;
+                    }
+                }
+            }
+
+            // Expose celebration function to global scope
+            window.createCelebrationBurst = createCelebrationBurst;
+
+            // ============================================================
+            // BIRD SYSTEM (Canvas Birds Layer) - Flocking Behavior
+            // ============================================================
+            class Bird {
+                constructor(flockId) {
+                    this.flockId = flockId;
+                    this.reset(true);
+                }
+                reset(initial = false) {
+                    if (initial) {
+                        this.x = Math.random() * W;
+                        this.y = H * 0.04 + Math.random() * H * 0.22;
+                    } else {
+                        this.x = -60 - Math.random() * 200;
+                        this.y = H * 0.04 + Math.random() * H * 0.22;
+                    }
+                    this.size = Math.random() * 2 + 1;
+                    this.baseSpeed = (Math.random() * 1.5 + 0.9) / this.size;
+                    this.speedX = this.baseSpeed;
+                    this.speedY = 0;
+                    this.wingTime = Math.random() * 60;
+                    this.wingSpeed = Math.random() * 0.12 + 0.06;
+                    this.yBase = this.y;
+                    this.yOscillationAmp = Math.random() * 0.4 + 0.1;
+                    this.yOscillationSpeed = Math.random() * 0.03 + 0.01;
+                }
+                update(time, flockBirds) {
+                    this.x += this.speedX;
+                    this.wingTime += this.wingSpeed;
+
+                    // Gentle Y oscillation
+                    this.y = this.yBase + Math.sin(time * this.yOscillationSpeed + this.flockId) *
+                        this.yOscillationAmp * 8;
+
+                    // Slight flock cohesion
+                    if (flockBirds && flockBirds.length > 1) {
+                        let avgY = 0;
+                        flockBirds.forEach(b => { avgY += b.y; });
+                        avgY /= flockBirds.length;
+                        this.y += (avgY - this.y) * 0.003;
+                    }
+
+                    if (this.x > W + 80) {
+                        this.reset();
+                    }
+                }
+                draw(ctx) {
+                    const wingFlap = Math.sin(this.wingTime) * 4 * this.size;
+                    const bodyLength = 7 * this.size;
+                    const wingSpan = 9 * this.size;
+
+                    ctx.fillStyle = '#0a1810';
+                    ctx.strokeStyle = '#0d2018';
+                    ctx.lineWidth = 0.6;
+
+                    // Body
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x - bodyLength * 0.7, this.y + bodyLength * 0.15);
+
+                    // Left wing
+                    ctx.moveTo(this.x - bodyLength * 0.25, this.y);
+                    ctx.quadraticCurveTo(
+                        this.x - wingSpan * 0.5, this.y - wingFlap,
+                        this.x - wingSpan * 0.8, this.y - wingFlap * 1.3
+                    );
+                    ctx.quadraticCurveTo(
+                        this.x - bodyLength * 0.3, this.y + bodyLength * 0.1,
+                        this.x, this.y + bodyLength * 0.2
+                    );
+
+                    // Right wing
+                    ctx.moveTo(this.x - bodyLength * 0.25, this.y);
+                    ctx.quadraticCurveTo(
+                        this.x + wingSpan * 0.3, this.y - wingFlap,
+                        this.x + wingSpan * 0.7, this.y - wingFlap * 1.3
+                    );
+                    ctx.quadraticCurveTo(
+                        this.x + bodyLength * 0.15, this.y + bodyLength * 0.1,
+                        this.x, this.y + bodyLength * 0.2
+                    );
+
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+
+            // Create multiple flocks
+            const flocks = [];
+            const FLOCK_COUNT = 3;
+            const BIRDS_PER_FLOCK = 7;
+
+            function initBirds() {
+                flocks.length = 0;
+                for (let f = 0; f < FLOCK_COUNT; f++) {
+                    const flock = [];
+                    for (let b = 0; b < BIRDS_PER_FLOCK; b++) {
+                        flock.push(new Bird(f));
+                    }
+                    flocks.push(flock);
+                }
+            }
+
+            function renderBirds(time) {
+                ctxBirds.clearRect(0, 0, W, H);
+                flocks.forEach(flock => {
+                    flock.forEach(bird => {
+                        bird.update(time, flock);
+                        bird.draw(ctxBirds);
+                    });
+                });
+            }
+
+            // ============================================================
+            // HUD OVERLAY (Canvas HUD Layer) - Scanning & Circuit Effects
+            // ============================================================
+            function renderHUDOverlay(time) {
+                ctxHUD.clearRect(0, 0, W, H);
+
+                // Corner accent lines
+                const cornerLen = Math.min(W, H) * 0.06;
+                const margin = 15;
+                ctxHUD.strokeStyle = 'rgba(0,255,85,0.35)';
+                ctxHUD.lineWidth = 1.2;
+
+                // Top-left corner
+                ctxHUD.beginPath();
+                ctxHUD.moveTo(margin, margin + cornerLen);
+                ctxHUD.lineTo(margin, margin);
+                ctxHUD.lineTo(margin + cornerLen, margin);
+                ctxHUD.stroke();
+
+                // Top-right corner
+                ctxHUD.beginPath();
+                ctxHUD.moveTo(W - margin - cornerLen, margin);
+                ctxHUD.lineTo(W - margin, margin);
+                ctxHUD.lineTo(W - margin, margin + cornerLen);
+                ctxHUD.stroke();
+
+                // Bottom-left corner
+                ctxHUD.beginPath();
+                ctxHUD.moveTo(margin, H - margin - cornerLen);
+                ctxHUD.lineTo(margin, H - margin);
+                ctxHUD.lineTo(margin + cornerLen, H - margin);
+                ctxHUD.stroke();
+
+                // Bottom-right corner
+                ctxHUD.beginPath();
+                ctxHUD.moveTo(W - margin - cornerLen, H - margin);
+                ctxHUD.lineTo(W - margin, H - margin);
+                ctxHUD.lineTo(W - margin, H - margin - cornerLen);
+                ctxHUD.stroke();
+
+                // Subtle grid lines (very faint)
+                ctxHUD.strokeStyle = 'rgba(0,255,85,0.06)';
+                ctxHUD.lineWidth = 0.5;
+                const gridSpacing = 80;
+                for (let x = gridSpacing; x < W; x += gridSpacing) {
+                    ctxHUD.beginPath();
+                    ctxHUD.moveTo(x, 0);
+                    ctxHUD.lineTo(x, H);
+                    ctxHUD.stroke();
+                }
+                for (let y = gridSpacing; y < H; y += gridSpacing) {
+                    ctxHUD.beginPath();
+                    ctxHUD.moveTo(0, y);
+                    ctxHUD.lineTo(W, y);
+                    ctxHUD.stroke();
+                }
+
+                // Scanning dot that moves across
+                const scanX = (Math.sin(time * 0.025) * 0.5 + 0.5) * W;
+                const scanY = (Math.cos(time * 0.018) * 0.3 + 0.55) * H;
+                const scanGlow = ctxHUD.createRadialGradient(scanX, scanY, 2, scanX, scanY, 35);
+                scanGlow.addColorStop(0, 'rgba(0,255,85,0.5)');
+                scanGlow.addColorStop(1, 'rgba(0,255,85,0)');
+                ctxHUD.fillStyle = scanGlow;
+                ctxHUD.beginPath();
+                ctxHUD.arc(scanX, scanY, 35, 0, Math.PI * 2);
+                ctxHUD.fill();
+
+                ctxHUD.beginPath();
+                ctxHUD.arc(scanX, scanY, 2.5, 0, Math.PI * 2);
+                ctxHUD.fillStyle = 'rgba(0,255,85,0.8)';
+                ctxHUD.fill();
+            }
+
+            // ============================================================
+            // RESIZE HANDLER
+            // ============================================================
+            function resizeAllCanvases() {
+                W = window.innerWidth;
+                H = window.innerHeight;
+                const canvases = [canvasSky, canvasMountains, canvasEffects, canvasParticles, canvasBirds,
+                    canvasHUD
+                ];
+                canvases.forEach(c => {
+                    c.width = W;
+                    c.height = H;
+                });
+                initStars();
+                initMountains();
+                initEffects();
+                initParticles();
+                initBirds();
+            }
+
+            // ============================================================
+            // MAIN ANIMATION LOOP
+            // ============================================================
+            function animate(timestamp) {
+                globalTime = timestamp * 0.001; // Convert to seconds
+                renderSky(globalTime);
+                renderMountains();
+                renderEffects(globalTime);
+                renderParticles(globalTime);
+                renderBirds(globalTime);
+                renderHUDOverlay(globalTime);
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            // ============================================================
+            // INITIALIZATION
+            // ============================================================
+            function initAll() {
+                resizeAllCanvases();
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            // Handle resize with debounce
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    resizeAllCanvases();
+                }, 200);
+            });
+
+            // Handle orientation change on mobile
+            window.addEventListener('orientationchange', () => {
+                setTimeout(resizeAllCanvases, 300);
+            });
+
+            // Start everything
+            initAll();
+
+            // ============================================================
+            // LOGGING (for verification of universal time sync)
+            // ============================================================
+            console.log('%c🌍 UNIVERSAL COUNTDOWN INITIALIZED %c| %cTarget: ' + TARGET_DATE_ISO,
+                'color:#00ff55;font-weight:bold;',
+                '',
+                'color:#fff;');
+            console.log('%c⏱ Target UTC timestamp: %c' + targetDateUTC + ' ms',
+                'color:#aaa;', 'color:#ff0;');
+            console.log('%c📍 Your current UTC timestamp: %c' + Date.now() + ' ms',
+                'color:#aaa;', 'color:#ff0;');
+            console.log('%c✅ Countdown is globally synchronized via ISO 8601 +05:00 offset.',
+                'color:#0f0;');
+            console.log('%c   All users worldwide will see the countdown end at the same moment.',
+                'color:#0f0;');
+
+            // Prevent memory leaks on page unload
+            window.addEventListener('beforeunload', () => {
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                clearInterval(countdownInterval);
+            });
+
+            // ============================================================
+            // END OF JAVASCRIPT ENGINE
+            // ============================================================
+        })();
+    </script>
+</body>
+  </html>
