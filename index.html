@@ -1,1761 +1,4797 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Countdown To Excellence | Pakistan</title>
-    <style>
-        /* ============================================================
-           GOOGLE FONTS IMPORT
-           ============================================================ */
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Share+Tech+Mono&display=swap');
+<meta charset="UTF-8">
 
-        /* ============================================================
-           CSS CUSTOM PROPERTIES (DESIGN TOKENS)
-           ============================================================ */
-        :root {
-            --neon-green: #00ff55;
-            --neon-green-dim: #00cc44;
-            --neon-green-dark: #008833;
-            --deep-green: #021a0d;
-            --deeper-green: #010f07;
-            --abyss: #010804;
-            --tech-glow: rgba(0, 255, 85, 0.65);
-            --tech-glow-soft: rgba(0, 255, 85, 0.3);
-            --tech-glow-strong: rgba(0, 255, 85, 0.9);
-            --white-soft: #e8e8e8;
-            --golden: #d4a843;
-            --golden-glow: rgba(212, 168, 67, 0.6);
-            --crescent-white: #f5f5f0;
-            --danger-red: #ff3344;
-            --sky-top: #0a1a2e;
-            --sky-mid: #152535;
-            --sky-low: #1a2a20;
-            --mountain-far: #0d1f14;
-            --mountain-mid: #091a0f;
-            --mountain-near: #05100a;
-            --flag-green: #01411c;
-            --flag-white-stripe: #ffffff;
-        }
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no">
 
-        /* ============================================================
-           GLOBAL RESET & BASE STYLES
-           ============================================================ */
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+<meta name="theme-color" content="#ffffff">
 
-        body,
-        html {
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            background-color: var(--abyss);
-            overflow: hidden;
-            font-family: 'Rajdhani', sans-serif;
-            color: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+<title>Pakistan — Premium Countdown</title>
 
-        /* ============================================================
-           MAIN APP CONTAINER
-           ============================================================ */
-        #app-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            overflow: hidden;
-            z-index: 1;
-        }
+<style>
 
-        /* ============================================================
-           CANVAS LAYERS (MULTIPLE FOR DEPTH)
-           ============================================================ */
-        .canvas-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-        #canvas-sky {
-            z-index: 2;
-        }
-        #canvas-mountains {
-            z-index: 3;
-        }
-        #canvas-effects {
-            z-index: 4;
-        }
-        #canvas-particles {
-            z-index: 5;
-        }
-        #canvas-birds {
-            z-index: 6;
-        }
-        #canvas-hud-overlay {
-            z-index: 11;
-            pointer-events: none;
-        }
+/* =========================================================
+   RESET
+========================================================= */
 
-        /* ============================================================
-           CSS SKY GRADIENT LAYER
-           ============================================================ */
-        .sky-gradient-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg,
-                    #020d1a 0%, #051525 8%, #0a1a30 18%,
-                    #0d1c2a 28%, #0f1e25 38%, #11201e 48%,
-                    #0e1d18 58%, #0a1812 68%, #06120c 80%,
-                    #030e08 92%, #010804 100%);
-            z-index: 1;
-            pointer-events: none;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
 
-        /* Atmospheric haze overlay */
-        .atmosphere-haze {
-            position: absolute;
-            top: 25%;
-            left: 0;
-            width: 100%;
-            height: 40%;
-            background: radial-gradient(ellipse at 50% 60%, rgba(20, 40, 30, 0.35) 0%, transparent 70%);
-            z-index: 2;
-            pointer-events: none;
-            animation: haze-pulse 8s ease-in-out infinite;
-        }
-        @keyframes haze-pulse {
-            0%,
-            100% {
-                opacity: 0.7;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
+html{
+    width:100%;
+    min-height:100%;
+    background:#f8fbfa;
+}
 
-        /* Light rays from top */
-        .light-rays {
-            position: absolute;
-            top: -10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 60%;
-            background: radial-gradient(ellipse at 50% 0%,
-                    rgba(0, 255, 85, 0.04) 0%, rgba(0, 200, 60, 0.02) 30%, transparent 65%);
-            z-index: 2;
-            pointer-events: none;
-            animation: ray-shift 12s ease-in-out infinite;
-        }
-        @keyframes ray-shift {
-            0%,
-            100% {
-                opacity: 0.6;
-                transform: translateX(-50%) scaleX(1);
-            }
-            25% {
-                opacity: 0.9;
-                transform: translateX(-48%) scaleX(1.15);
-            }
-            50% {
-                opacity: 0.5;
-                transform: translateX(-52%) scaleX(0.9);
-            }
-            75% {
-                opacity: 0.85;
-                transform: translateX(-50%) scaleX(1.1);
-            }
-        }
+body{
+    width:100%;
+    min-height:100vh;
+    overflow-x:hidden;
 
-        /* ============================================================
-           TOP VISUALS CONTAINER (FLAG & MINAR)
-           ============================================================ */
-        .top-visuals {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 48%;
-            z-index: 7;
-            pointer-events: none;
-        }
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(14,117,88,.075),
+            transparent 34%
+        ),
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fbfdfc 52%,
+            #f5faf8 100%
+        );
 
-        /* ---- Waving Pakistan Flag ---- */
-        .flag-container {
-            position: absolute;
-            top: 3%;
-            left: 2%;
-            width: 50%;
-            max-width: 420px;
-            height: 75%;
-            perspective: 1200px;
-            filter: drop-shadow(8px 12px 30px rgba(0, 0, 0, 0.85));
-            z-index: 8;
-        }
-        .flag-wrapper {
-            width: 100%;
-            height: 100%;
-            transform-origin: left center;
-            animation: flag-wave-realistic 5s ease-in-out infinite alternate;
-            transform-style: preserve-3d;
-        }
-        .flag-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            image-rendering: auto;
-        }
-        @keyframes flag-wave-realistic {
-            0% {
-                transform: rotateY(-5deg) rotateX(3deg) skewY(1deg);
-            }
-            20% {
-                transform: rotateY(-15deg) rotateX(-1deg) skewY(-0.5deg);
-            }
-            40% {
-                transform: rotateY(-8deg) rotateX(4deg) skewY(1.5deg);
-            }
-            60% {
-                transform: rotateY(-20deg) rotateX(-3deg) skewY(-1deg);
-            }
-            80% {
-                transform: rotateY(-10deg) rotateX(2deg) skewY(0.8deg);
-            }
-            100% {
-                transform: rotateY(-17deg) rotateX(-2deg) skewY(-1.2deg);
-            }
-        }
+    color:#075c49;
 
-        /* Flag pole glow */
-        .flag-pole-glow {
-            position: absolute;
-            left: 1.5%;
-            top: 3%;
-            width: 4px;
-            height: 75%;
-            background: linear-gradient(180deg,
-                    rgba(0, 255, 85, 0.6) 0%, rgba(0, 200, 50, 0.3) 40%,
-                    rgba(0, 150, 40, 0.1) 70%, transparent 100%);
-            border-radius: 2px;
-            z-index: 7;
-            pointer-events: none;
-            animation: pole-flicker 3s ease-in-out infinite;
-        }
-        @keyframes pole-flicker {
-            0%,
-            100% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
+    font-family:
+        Inter,
+        ui-sans-serif,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+}
 
-        /* ---- Minar-e-Pakistan ---- */
-        .minar-container {
-            position: absolute;
-            top: 1%;
-            right: 3%;
-            width: 130px;
-            max-width: 18vw;
-            height: 88%;
-            background-image: url("min.png");
-            background-repeat: no-repeat;
-            background-position: top center;
-            background-size: contain;
-            filter: drop-shadow(0 0 25px var(--tech-glow-soft)) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.9));
-            opacity: 0.95;
-            z-index: 8;
-            animation: minar-subtle-glow 4s ease-in-out infinite;
-        }
-        @keyframes minar-subtle-glow {
-            0%,
-            100% {
-                filter: drop-shadow(0 0 25px var(--tech-glow-soft)) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.9));
-            }
-            50% {
-                filter: drop-shadow(0 0 40px var(--tech-glow)) drop-shadow(0 8px 25px rgba(0, 0, 0, 0.95));
-            }
-        }
 
-        /* Minar base accent */
-        .minar-base-accent {
-            position: absolute;
-            right: 3%;
-            bottom: 10%;
-            width: 130px;
-            max-width: 18vw;
-            height: 15px;
-            background: radial-gradient(ellipse, rgba(0, 255, 85, 0.4) 0%, transparent 70%);
-            z-index: 7;
-            pointer-events: none;
-            animation: base-glow-pulse 4s ease-in-out infinite;
-        }
-        @keyframes base-glow-pulse {
-            0%,
-            100% {
-                opacity: 0.5;
-            }
-            50% {
-                opacity: 0.9;
-            }
-        }
+/* =========================================================
+   PAGE
+========================================================= */
 
-        /* ============================================================
-           HUD INTERFACE (FOREGROUND)
-           ============================================================ */
-        .hud-interface {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 750px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding-bottom: 1.5vh;
-            pointer-events: none;
-        }
+.page{
+    width:100%;
+    max-width:1100px;
 
-        /* ---- Title Section ---- */
-        .title-container {
-            text-align: center;
-            margin-bottom: 6px;
-            position: relative;
-        }
-        .title-container::before,
-        .title-container::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 60px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
-            opacity: 0.7;
-        }
-        .title-container::before {
-            left: -70px;
-        }
-        .title-container::after {
-            right: -70px;
-        }
+    margin:0 auto;
 
-        h1.countdown-text {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 4.5vw, 3.8rem);
-            font-weight: 900;
-            color: #ffffff;
-            letter-spacing: 4px;
-            line-height: 1;
-            text-shadow:
-                0 4px 15px rgba(0, 0, 0, 0.95),
-                0 0 30px rgba(255, 255, 255, 0.15),
-                0 0 60px rgba(0, 255, 85, 0.1);
-            animation: title-breath 6s ease-in-out infinite;
-        }
-        @keyframes title-breath {
-            0%,
-            100% {
-                text-shadow: 0 4px 15px rgba(0, 0, 0, 0.95), 0 0 30px rgba(255, 255, 255, 0.15), 0 0 60px rgba(0, 255, 85, 0.1);
-            }
-            50% {
-                text-shadow: 0 4px 20px rgba(0, 0, 0, 0.95), 0 0 45px rgba(255, 255, 255, 0.25), 0 0 80px rgba(0, 255, 85, 0.2);
-            }
-        }
+    padding:
+        18px
+        18px
+        60px;
+}
 
-        h2.excellence-text {
-            font-size: clamp(0.8rem, 1.6vw, 1.35rem);
-            color: var(--neon-green);
-            letter-spacing: 7px;
-            font-weight: 700;
-            margin-top: 2px;
-            text-shadow: 0 0 12px var(--tech-glow), 0 0 25px var(--tech-glow-soft);
-            animation: excellence-flicker 7s ease-in-out infinite;
-        }
-        @keyframes excellence-flicker {
-            0%,
-            100% {
-                opacity: 0.9;
-            }
-            30% {
-                opacity: 1;
-            }
-            60% {
-                opacity: 0.85;
-            }
-            85% {
-                opacity: 1;
-            }
-        }
 
-        /* ---- Timer Box ---- */
-        .timer-box {
-            position: relative;
-            background: rgba(1, 15, 7, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 2px solid rgba(0, 255, 85, 0.45);
-            padding: 18px 35px;
-            display: flex;
-            gap: 28px;
-            clip-path: polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px),
-                    calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px), 0 22px);
-            box-shadow:
-                0 0 30px rgba(0, 255, 85, 0.2) inset,
-                0 0 50px rgba(0, 255, 85, 0.08),
-                0 10px 40px rgba(0, 0, 0, 0.7);
-            margin-top: 4px;
-        }
-        .timer-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 2px solid var(--neon-green);
-            clip-path: polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px),
-                    calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px), 0 22px);
-            pointer-events: none;
-            box-shadow:
-                0 0 18px var(--tech-glow),
-                0 0 40px var(--tech-glow-soft);
-            animation: border-pulse 3s ease-in-out infinite;
-        }
-        @keyframes border-pulse {
-            0%,
-            100% {
-                box-shadow: 0 0 18px var(--tech-glow), 0 0 40px var(--tech-glow-soft);
-            }
-            50% {
-                box-shadow: 0 0 30px var(--tech-glow-strong), 0 0 60px var(--tech-glow);
-            }
-        }
+/* =========================================================
+   FLAG SECTION
+========================================================= */
 
-        /* Scan line effect on timer */
-        .timer-box::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
-            opacity: 0;
-            animation: scan-line 4s linear infinite;
-            pointer-events: none;
-            z-index: 2;
-        }
-        @keyframes scan-line {
-            0% {
-                top: 0;
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.8;
-            }
-            80% {
-                opacity: 0.8;
-            }
-            100% {
-                top: 100%;
-                opacity: 0;
-            }
-        }
+.flag-section{
+    width:100%;
 
-        .time-segment {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 3;
-        }
-        .time-segment:not(:last-child)::after {
-            content: ':';
-            position: absolute;
-            right: -16px;
-            top: 10%;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            color: var(--neon-green);
-            text-shadow: 0 0 10px var(--tech-glow);
-            animation: colon-blink 1s step-end infinite;
-        }
-        @keyframes colon-blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-        .number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2.2rem, 4.5vw, 3.8rem);
-            font-weight: 700;
-            line-height: 1;
-            color: #ffffff;
-            text-shadow:
-                0 0 14px rgba(0, 255, 85, 0.55),
-                0 0 30px rgba(0, 255, 85, 0.25),
-                0 0 50px rgba(0, 255, 85, 0.1);
-            letter-spacing: 2px;
-            transition: text-shadow 0.3s;
-        }
-        .number.flash {
-            text-shadow:
-                0 0 20px rgba(0, 255, 85, 0.9),
-                0 0 40px rgba(0, 255, 85, 0.5),
-                0 0 70px rgba(0, 255, 85, 0.3);
-        }
+    position:relative;
 
-        .label {
-            font-size: clamp(0.6rem, 1vw, 0.8rem);
-            font-weight: 600;
-            letter-spacing: 3px;
-            color: #c0c0c0;
-            margin-top: 5px;
-            text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
-        }
+    margin-bottom:18px;
+}
 
-        .remaining-badge {
-            position: absolute;
-            bottom: -13px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #011409;
-            border: 1px solid var(--neon-green);
-            padding: 2px 20px;
-            font-size: 0.7rem;
-            letter-spacing: 5px;
-            color: white;
-            box-shadow: 0 0 10px var(--tech-glow-soft);
-            clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 100%, 0 100%);
-            z-index: 3;
-            font-weight: 600;
-        }
 
-        /* ---- Info Text ---- */
-        .info-text {
-            margin-top: 18px;
-            text-align: center;
-            z-index: 3;
-        }
-        .info-text p {
-            font-size: clamp(0.85rem, 1.4vw, 1.2rem);
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            margin: 2px 0;
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
-            line-height: 1.3;
-        }
-        .green-highlight {
-            color: var(--neon-green);
-            font-style: italic;
-            text-shadow: 0 0 10px var(--tech-glow), 0 0 20px var(--tech-glow-soft);
-            font-weight: 700;
-        }
-        .bracket-text {
-            color: #aaaaaa;
-            font-family: 'Share Tech Mono', monospace;
-            letter-spacing: 3px;
-            font-size: 0.9em;
-        }
+/*
+=========================================================
+FLAG FRAME
 
-        /* ---- Independence Badge ---- */
-        .independence-badge {
-            margin-top: 10px;
-            border: 1px solid rgba(0, 255, 85, 0.55);
-            padding: 7px 24px;
-            text-align: center;
-            clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
-            background: rgba(0, 20, 10, 0.75);
-            position: relative;
-            z-index: 3;
-            box-shadow: 0 0 18px rgba(0, 255, 85, 0.15);
-        }
-        .independence-badge::before,
-        .independence-badge::after {
-            content: "★";
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            color: var(--neon-green);
-            font-size: 10px;
-            text-shadow: 0 0 6px var(--neon-green), 0 0 14px var(--tech-glow);
-            animation: star-twinkle 2s ease-in-out infinite;
-        }
-        .independence-badge::before {
-            top: -9px;
-        }
-        .independence-badge::after {
-            bottom: -9px;
-            animation-delay: 1s;
-        }
-        @keyframes star-twinkle {
-            0%,
-            100% {
-                opacity: 0.6;
-                transform: translateX(-50%) scale(1);
-            }
-            50% {
-                opacity: 1;
-                transform: translateX(-50%) scale(1.3);
-            }
-        }
+Keeps the flag visually large while preserving
+the original 3:2 Pakistan flag ratio.
+=========================================================
+*/
 
-        .this-week {
-            font-size: 0.58rem;
-            letter-spacing: 3px;
-            color: #999;
-            display: block;
-        }
-        .ind-week-title {
-            font-size: clamp(0.78rem, 1.3vw, 1rem);
-            font-weight: 700;
-            color: var(--neon-green);
-            letter-spacing: 2px;
-            text-shadow: 0 0 8px var(--tech-glow-soft);
-        }
+.flag-frame{
 
-        /* ---- August Block ---- */
-        .august-block {
-            margin-top: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 3;
-        }
-        .fourteen-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .fourteen {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(1.9rem, 3.5vw, 2.8rem);
-            font-weight: 900;
-            line-height: 0.8;
-            color: white;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.45), 0 0 35px rgba(0, 255, 85, 0.2);
-        }
-        .mini-crescent {
-            width: 26px;
-            height: 26px;
-            background-color: transparent;
-            border-radius: 50%;
-            box-shadow: -5px 5px 0 0 var(--crescent-white);
-            position: relative;
-            transform: rotate(-45deg) translateY(-2px);
-            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
-        }
-        .mini-crescent::after {
-            content: "★";
-            position: absolute;
-            top: 13px;
-            left: -3px;
-            color: var(--crescent-white);
-            font-size: 10px;
-            transform: rotate(45deg);
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-        }
-        .august-text {
-            color: var(--neon-green);
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 7px;
-            margin-top: 1px;
-            text-shadow: 0 0 8px var(--tech-glow-soft);
-        }
-        .urdu-text {
-            margin-top: 4px;
-            font-size: 1.1rem;
-            color: white;
-            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--tech-glow-soft);
-            letter-spacing: 1px;
-            font-family: 'Noto Nastaliq Urdu', 'Arial', sans-serif;
-            direction: rtl;
-        }
+    width:min(
+        100%,
+        920px
+    );
 
-        /* ---- Global Time Indicator ---- */
-        .global-time-indicator {
-            margin-top: 6px;
-            font-size: 0.55rem;
-            letter-spacing: 2px;
-            color: #666;
-            text-align: center;
-            z-index: 3;
-        }
-        .global-time-indicator span {
-            color: var(--neon-green-dim);
-            font-family: 'Share Tech Mono', monospace;
-        }
+    aspect-ratio:3 / 2;
 
-        /* ============================================================
-           CORNER TECHNICAL GRAPHICS
-           ============================================================ */
-        .corner-graphic {
-            position: absolute;
-            bottom: 12px;
-            opacity: 0.8;
-            pointer-events: none;
-            filter: drop-shadow(0 0 10px var(--tech-glow-soft));
-            z-index: 10;
-            width: 110px;
-            animation: corner-rotate 20s linear infinite;
-        }
-        .cg-left {
-            left: 15px;
-            animation-direction: normal;
-        }
-        .cg-right {
-            right: 15px;
-            animation-direction: reverse;
-        }
-        @keyframes corner-rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+    position:relative;
 
-        /* ============================================================
-           RESPONSIVE ADJUSTMENTS
-           ============================================================ */
-        @media (max-width: 600px) {
-            .flag-container {
-                width: 42%;
-                top: 4%;
-                left: 1%;
-            }
-            .minar-container {
-                width: 90px;
-                right: 2%;
-                top: 3%;
-            }
-            .minar-base-accent {
-                width: 90px;
-                right: 2%;
-            }
-            .timer-box {
-                padding: 12px 18px;
-                gap: 16px;
-            }
-            .time-segment:not(:last-child)::after {
-                right: -10px;
-                font-size: 1.3rem;
-            }
-            .corner-graphic {
-                width: 70px;
-                bottom: 8px;
-            }
-            .cg-left {
-                left: 8px;
-            }
-            .cg-right {
-                right: 8px;
-            }
-            .title-container::before,
-            .title-container::after {
-                width: 30px;
-            }
-            .title-container::before {
-                left: -35px;
-            }
-            .title-container::after {
-                right: -35px;
-            }
-            .flag-pole-glow {
-                width: 2px;
-                left: 1%;
-            }
-        }
-        @media (max-width: 380px) {
-            .flag-container {
-                width: 38%;
-                top: 5%;
-            }
-            .minar-container {
-                width: 65px;
-                right: 1%;
-            }
-            .minar-base-accent {
-                width: 65px;
-                right: 1%;
-            }
-            .timer-box {
-                padding: 10px 12px;
-                gap: 10px;
-            }
-            .number {
-                font-size: 1.7rem;
-            }
-            .time-segment:not(:last-child)::after {
-                right: -7px;
-                font-size: 1rem;
-            }
-            .remaining-badge {
-                font-size: 0.6rem;
-                padding: 2px 12px;
-                letter-spacing: 3px;
-            }
-        }
-        @media (min-width: 1200px) {
-            .flag-container {
-                width: 38%;
-                max-width: 500px;
-                left: 4%;
-            }
-            .minar-container {
-                width: 160px;
-                max-width: 14vw;
-                right: 5%;
-            }
-            .minar-base-accent {
-                width: 160px;
-                max-width: 14vw;
-                right: 5%;
-            }
-            .corner-graphic {
-                width: 140px;
-            }
-        }
+    overflow:hidden;
 
-        /* ============================================================
-           COUNTDOWN END CELEBRATION OVERLAY
-           ============================================================ */
-        .celebration-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0;
-            transition: opacity 1.5s ease-in;
-        }
-        .celebration-overlay.active {
-            opacity: 1;
-        }
-    </style>
+    background:#ffffff;
+
+    border-radius:18px;
+
+    border:
+        1px solid
+        rgba(11,87,69,.10);
+
+    box-shadow:
+        0 18px 45px
+        rgba(7,92,73,.11),
+
+        0 4px 15px
+        rgba(0,0,0,.055);
+
+    isolation:isolate;
+}
+
+
+/*
+=========================================================
+SUBTLE GOLD FRAME
+=========================================================
+*/
+
+.flag-frame::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:8px;
+
+    border-radius:12px;
+
+    border:
+        1px solid
+        rgba(188,145,50,.45);
+
+    pointer-events:none;
+
+    z-index:4;
+}
+
+
+/*
+=========================================================
+INNER WHITE HIGHLIGHT
+=========================================================
+*/
+
+.flag-frame::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:5;
+
+    background:
+        linear-gradient(
+            110deg,
+            rgba(255,255,255,.18),
+            transparent 24%,
+            transparent 72%,
+            rgba(255,255,255,.08)
+        );
+}
+
+
+/* =========================================================
+   WEBGL CANVAS
+========================================================= */
+
+#flagCanvas{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    z-index:2;
+}
+
+
+/* =========================================================
+   GOLD DIVIDER
+========================================================= */
+
+.gold-divider{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:12px;
+
+    margin:
+        12px
+        auto
+        18px;
+}
+
+
+.gold-divider::before,
+.gold-divider::after{
+
+    content:"";
+
+    height:1px;
+
+    flex:1;
+
+    max-width:210px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(184,141,48,.58),
+            transparent
+        );
+}
+
+
+.gold-diamond{
+
+    width:9px;
+    height:9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #d7b45d,
+            #9e7420
+        );
+
+    transform:rotate(45deg);
+
+    box-shadow:
+        0 0 10px
+        rgba(202,159,58,.35);
+}
+
+
+/* =========================================================
+   COUNTDOWN PANEL
+========================================================= */
+
+.countdown-panel{
+
+    width:100%;
+
+    position:relative;
+
+    padding:
+        24px
+        20px
+        22px;
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.98),
+            rgba(248,252,250,.96)
+        );
+
+    border:
+        1px solid
+        rgba(11,87,69,.10);
+
+    box-shadow:
+        0 20px 50px
+        rgba(7,92,73,.10),
+
+        inset 0 1px 0
+        rgba(255,255,255,.95);
+
+    overflow:hidden;
+}
+
+
+/*
+=========================================================
+VERY SUBTLE PANEL LIGHT
+NO ROTATION
+=========================================================
+*/
+
+.countdown-panel::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:10%;
+    right:10%;
+    top:0;
+
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(198,154,56,.55),
+            transparent
+        );
+}
+
+
+.countdown-title{
+
+    text-align:center;
+
+    font-size:clamp(
+        22px,
+        4vw,
+        32px
+    );
+
+    font-weight:800;
+
+    letter-spacing:
+        .22em;
+
+    color:#075c49;
+
+    margin-bottom:8px;
+}
+
+
+.countdown-subline{
+
+    width:82px;
+
+    height:2px;
+
+    margin:
+        0
+        auto
+        24px;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #c69b42,
+            transparent
+        );
+
+    box-shadow:
+        0 0 9px
+        rgba(198,155,66,.35);
+}
+
+
+/* =========================================================
+   TIMER GRID
+========================================================= */
+
+.timer-grid{
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:20px;
+
+    align-items:center;
+}
+
+
+/* =========================================================
+   TIMER ITEM
+========================================================= */
+
+.timer-item{
+
+    min-width:0;
+
+    text-align:center;
+
+    position:relative;
+}
+
+
+/* =========================================================
+   3D CARD CONTAINER
+========================================================= */
+
+.flip-card{
+
+    position:relative;
+
+    width:100%;
+
+    height:130px;
+
+    perspective:1100px;
+
+    isolation:isolate;
+}
+
+
+/* =========================================================
+   CARD OUTER SHELL
+========================================================= */
+
+.flip-card-shell{
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:21px;
+
+    padding:1px;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.98),
+            rgba(225,239,234,.9)
+        );
+
+    box-shadow:
+        0 16px 28px
+        rgba(7,92,73,.11),
+
+        0 3px 8px
+        rgba(0,0,0,.045),
+
+        inset 0 1px 0
+        rgba(255,255,255,.95);
+}
+
+
+/* =========================================================
+   CONTINUOUS GOLDEN FLOWING BORDER
+
+   IMPORTANT:
+   Only the border light moves.
+   The card itself NEVER rotates.
+========================================================= */
+
+.flip-card-shell::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-2px;
+
+    border-radius:23px;
+
+    padding:2px;
+
+    background:
+        conic-gradient(
+            from 0deg,
+            transparent 0deg,
+            transparent 255deg,
+            rgba(209,166,70,.05) 268deg,
+            rgba(231,194,102,.95) 286deg,
+            #fff0ad 300deg,
+            rgba(197,146,39,.88) 314deg,
+            transparent 332deg,
+            transparent 360deg
+        );
+
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+
+    -webkit-mask-composite:xor;
+
+    mask-composite:exclude;
+
+    animation:
+        borderFlow
+        3.4s
+        linear
+        infinite;
+
+    filter:
+        drop-shadow(
+            0 0 4px
+            rgba(210,164,59,.42)
+        );
+
+    pointer-events:none;
+
+    z-index:10;
+}
+
+
+@keyframes borderFlow{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+
+/*
+=========================================================
+INNER CARD SURFACE
+=========================================================
+*/
+
+.flip-surface{
+
+    position:absolute;
+
+    inset:1px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            150deg,
+            #ffffff 0%,
+            #f8fcfa 48%,
+            #eef7f3 100%
+        );
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.98),
+
+        inset 0 -10px 22px
+        rgba(7,92,73,.025);
+
+    z-index:2;
+}
+
+
+/*
+=========================================================
+PHYSICAL CARD CENTER LIGHT
+=========================================================
+*/
+
+.flip-surface::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:10%;
+    right:10%;
+
+    top:8px;
+
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(198,156,61,.35),
+            transparent
+        );
+
+    pointer-events:none;
+}
+
+
+/* =========================================================
+   FLIP LAYERS
+========================================================= */
+
+.flip-layer{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    backface-visibility:hidden;
+
+    -webkit-backface-visibility:hidden;
+
+    transform-style:preserve-3d;
+
+    font-variant-numeric:
+        tabular-nums;
+
+    font-feature-settings:
+        "tnum";
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+.flip-number{
+
+    display:block;
+
+    color:#075c49;
+
+    font-size:clamp(
+        48px,
+        8vw,
+        72px
+    );
+
+    line-height:1;
+
+    font-weight:800;
+
+    letter-spacing:
+        -.045em;
+
+    text-shadow:
+        0 1px 0 #ffffff,
+
+        0 3px 12px
+        rgba(7,92,73,.10);
+
+    transform:
+        translateZ(20px);
+}
+
+
+/*
+=========================================================
+FLIP ANIMATION
+
+TRUE 3D CARD MOVEMENT
+=========================================================
+*/
+
+.flip-layer.flip-out{
+
+    animation:
+        flipOut
+        .62s
+        cubic-bezier(
+            .22,
+            .72,
+            .24,
+            1
+        )
+        forwards;
+}
+
+
+.flip-layer.flip-in{
+
+    animation:
+        flipIn
+        .62s
+        cubic-bezier(
+            .22,
+            .72,
+            .24,
+            1
+        )
+        forwards;
+}
+
+
+@keyframes flipOut{
+
+    0%{
+        transform:
+            rotateX(0deg)
+            translateZ(0);
+        opacity:1;
+    }
+
+    45%{
+        transform:
+            rotateX(-88deg)
+            translateZ(10px);
+        opacity:1;
+    }
+
+    100%{
+        transform:
+            rotateX(-180deg)
+            translateZ(0);
+        opacity:.15;
+    }
+
+}
+
+
+@keyframes flipIn{
+
+    0%{
+        transform:
+            rotateX(180deg)
+            translateZ(0);
+        opacity:.15;
+    }
+
+    50%{
+        transform:
+            rotateX(88deg)
+            translateZ(10px);
+        opacity:1;
+    }
+
+    100%{
+        transform:
+            rotateX(0deg)
+            translateZ(0);
+        opacity:1;
+    }
+
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.timer-label{
+
+    margin-top:12px;
+
+    font-size:11px;
+
+    letter-spacing:
+        .19em;
+
+    font-weight:800;
+
+    color:
+        rgba(4,70,55,.58);
+
+    text-transform:uppercase;
+}
+
+
+/* =========================================================
+   SEPARATORS
+========================================================= */
+
+.timer-separator{
+
+    position:absolute;
+
+    right:-14px;
+
+    top:50%;
+
+    transform:
+        translateY(-50%);
+
+    color:#b9903b;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    line-height:1;
+
+    text-shadow:
+        0 0 8px
+        rgba(198,155,62,.22);
+
+    z-index:20;
+}
+
+
+.timer-separator::before,
+.timer-separator::after{
+
+    content:"";
+
+    display:block;
+
+    width:3px;
+    height:3px;
+
+    margin:
+        3px
+        auto;
+
+    border-radius:50%;
+
+    background:#b9903b;
+}
+
+
+/* =========================================================
+   VALUES / PRINCIPLES SECTION
+========================================================= */
+
+.values-section{
+
+    margin-top:22px;
+}
+
+
+.values-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:16px;
+}
+
+
+/* =========================================================
+   VALUE CARD
+========================================================= */
+
+.value-card{
+
+    position:relative;
+
+    min-height:142px;
+
+    padding:18px 16px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f4faf7
+        );
+
+    border:
+        1px solid
+        rgba(9,92,72,.10);
+
+    box-shadow:
+        0 14px 28px
+        rgba(7,92,73,.075),
+
+        inset 0 1px 0
+        rgba(255,255,255,.95);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+}
+
+
+.value-card:hover{
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 20px 35px
+        rgba(7,92,73,.11);
+}
+
+
+/*
+=========================================================
+GOLD ACCENT LINE
+=========================================================
+*/
+
+.value-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    right:0;
+
+    top:0;
+
+    height:2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #c8a04a,
+            transparent
+        );
+}
+
+
+/*
+=========================================================
+VALUE NUMBER CIRCLE
+=========================================================
+*/
+
+.value-number{
+
+    width:43px;
+    height:43px;
+
+    margin:0 auto 12px;
+
+    position:relative;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    color:#075c49;
+
+    background:#ffffff;
+
+    border:
+        2px solid
+        rgba(9,102,79,.15);
+
+    box-shadow:
+        0 4px 12px
+        rgba(7,92,73,.08);
+}
+
+
+.value-number::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-2px;
+
+    border-radius:50%;
+
+    border:
+        2px
+        solid
+        transparent;
+
+    border-top-color:#0c8768;
+
+    border-right-color:#c39a44;
+
+    transform:
+        rotate(-30deg);
+
+    opacity:.9;
+}
+
+
+.value-title{
+
+    text-align:center;
+
+    font-size:13px;
+
+    letter-spacing:
+        .14em;
+
+    font-weight:800;
+
+    color:#075c49;
+
+    text-transform:uppercase;
+}
+
+
+.value-description{
+
+    margin-top:7px;
+
+    text-align:center;
+
+    font-size:10px;
+
+    letter-spacing:.08em;
+
+    color:#75847f;
+
+    text-transform:uppercase;
+
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   LEADERSHIP SECTION
+========================================================= */
+
+.leadership-section{
+
+    margin-top:18px;
+}
+
+
+.leadership-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:18px;
+}
+
+
+/* =========================================================
+   PROFILE CARD
+========================================================= */
+
+.profile-card{
+
+    position:relative;
+
+    min-height:190px;
+
+    padding:20px;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #f8fcfa 60%,
+            #eef7f3 100%
+        );
+
+    border:
+        1px solid
+        rgba(7,92,73,.12);
+
+    box-shadow:
+        0 18px 34px
+        rgba(7,92,73,.09),
+
+        inset 0 1px 0
+        rgba(255,255,255,.96);
+
+    isolation:isolate;
+}
+
+
+/*
+=========================================================
+PROFILE CARD GOLD FLOW
+=========================================================
+*/
+
+.profile-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+    bottom:0;
+
+    width:3px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #cba452,
+            #0a7a5c,
+            #cba452
+        );
+
+    opacity:.9;
+}
+
+
+/*
+=========================================================
+PROFILE CARD TOP LIGHT
+=========================================================
+*/
+
+.profile-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:12%;
+    right:12%;
+
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(202,161,70,.7),
+            transparent
+        );
+}
+
+
+/* =========================================================
+   PROFILE HEADER
+========================================================= */
+
+.profile-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+    position:relative;
+
+    z-index:2;
+}
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+.profile-initial{
+
+    flex:
+        0 0
+        50px;
+
+    width:50px;
+    height:50px;
+
+    border-radius:15px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:17px;
+
+    font-weight:800;
+
+    color:#ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0d8768,
+            #075c49
+        );
+
+    border:
+        1px solid
+        rgba(201,164,80,.6);
+
+    box-shadow:
+        0 8px 18px
+        rgba(7,92,73,.18),
+
+        inset 0 1px 0
+        rgba(255,255,255,.25);
+}
+
+
+/* =========================================================
+   PROFILE NAME
+========================================================= */
+
+.profile-name{
+
+    color:#075c49;
+
+    font-size:21px;
+
+    font-weight:800;
+
+    line-height:1.1;
+}
+
+
+.profile-role{
+
+    margin-top:4px;
+
+    color:#b18a3e;
+
+    font-size:9px;
+
+    letter-spacing:
+        .16em;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+}
+
+
+/* =========================================================
+   PROFILE DETAILS
+========================================================= */
+
+.profile-details{
+
+    margin-top:18px;
+
+    display:grid;
+
+    gap:8px;
+
+    position:relative;
+
+    z-index:2;
+}
+
+
+.profile-detail{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:8px;
+
+    color:#62716c;
+
+    font-size:11px;
+
+    line-height:1.45;
+}
+
+
+.profile-detail::before{
+
+    content:"";
+
+    width:5px;
+    height:5px;
+
+    flex:
+        0 0
+        5px;
+
+    margin-top:5px;
+
+    border-radius:50%;
+
+    background:#c59b45;
+
+    box-shadow:
+        0 0 5px
+        rgba(197,155,69,.35);
+}
+
+
+/* =========================================================
+   PROFILE DECORATIVE NUMBER
+========================================================= */
+
+.profile-number{
+
+    position:absolute;
+
+    right:18px;
+    bottom:-20px;
+
+    font-size:100px;
+
+    line-height:1;
+
+    font-weight:900;
+
+    color:
+        rgba(7,92,73,.025);
+
+    pointer-events:none;
+}
+
+
+/* =========================================================
+   SOUND BUTTON
+========================================================= */
+
+#soundButton{
+
+    position:fixed;
+
+    right:18px;
+    bottom:18px;
+
+    width:50px;
+    height:50px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0c8062,
+            #075c49
+        );
+
+    color:#ffffff;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    z-index:100;
+
+    box-shadow:
+        0 10px 25px
+        rgba(7,92,73,.28),
+
+        0 0 0 5px
+        rgba(255,255,255,.78);
+
+    transition:
+        transform .2s ease;
+}
+
+
+#soundButton:active{
+
+    transform:
+        scale(.91);
+}
+
+
+#soundButton.on{
+
+    box-shadow:
+        0 10px 25px
+        rgba(7,92,73,.30),
+
+        0 0 0 5px
+        rgba(255,255,255,.8),
+
+        0 0 20px
+        rgba(26,142,107,.28);
+}
+
+
+/* =========================================================
+   COMPLETED STATE
+========================================================= */
+
+.completed-message{
+
+    display:none;
+
+    text-align:center;
+
+    color:#075c49;
+
+    font-weight:800;
+
+    letter-spacing:.12em;
+
+    padding:30px;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media(max-width:760px){
+
+    .page{
+
+        padding:
+            12px
+            12px
+            50px;
+    }
+
+
+    .flag-section{
+
+        margin-bottom:12px;
+    }
+
+
+    .flag-frame{
+
+        border-radius:14px;
+    }
+
+
+    .flag-frame::before{
+
+        inset:6px;
+
+        border-radius:9px;
+    }
+
+
+    .countdown-panel{
+
+        padding:
+            21px
+            13px
+            19px;
+
+        border-radius:22px;
+    }
+
+
+    .timer-grid{
+
+        gap:10px;
+    }
+
+
+    .flip-card{
+
+        height:104px;
+    }
+
+
+    .flip-number{
+
+        font-size:
+            clamp(
+                38px,
+                10vw,
+                58px
+            );
+    }
+
+
+    .timer-label{
+
+        font-size:9px;
+
+        letter-spacing:
+            .13em;
+    }
+
+
+    .timer-separator{
+
+        right:-9px;
+
+        font-size:21px;
+    }
+
+
+    .values-grid{
+
+        gap:10px;
+    }
+
+
+    .value-card{
+
+        min-height:126px;
+
+        padding:
+            15px
+            10px;
+    }
+
+
+    .value-number{
+
+        width:38px;
+        height:38px;
+    }
+
+
+    .value-title{
+
+        font-size:10px;
+
+        letter-spacing:
+            .09em;
+    }
+
+
+    .value-description{
+
+        font-size:8px;
+
+        letter-spacing:.035em;
+    }
+
+
+    .leadership-grid{
+
+        gap:12px;
+    }
+
+
+    .profile-card{
+
+        min-height:184px;
+
+        padding:15px 13px;
+    }
+
+
+    .profile-header{
+
+        gap:9px;
+    }
+
+
+    .profile-initial{
+
+        width:43px;
+        height:43px;
+
+        flex-basis:43px;
+
+        border-radius:12px;
+    }
+
+
+    .profile-name{
+
+        font-size:16px;
+    }
+
+
+    .profile-role{
+
+        font-size:7px;
+    }
+
+
+    .profile-detail{
+
+        font-size:9px;
+
+        gap:6px;
+    }
+
+
+    #soundButton{
+
+        width:46px;
+        height:46px;
+
+        right:14px;
+        bottom:14px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — SMALL PHONES
+========================================================= */
+
+@media(max-width:480px){
+
+    .page{
+
+        padding:
+            10px
+            10px
+            45px;
+    }
+
+
+    .flag-section{
+
+        margin-bottom:10px;
+    }
+
+
+    .gold-divider{
+
+        margin:
+            8px
+            auto
+            13px;
+    }
+
+
+    .countdown-panel{
+
+        padding:
+            19px
+            8px
+            17px;
+
+        border-radius:20px;
+    }
+
+
+    .countdown-title{
+
+        font-size:20px;
+
+        letter-spacing:
+            .18em;
+    }
+
+
+    .countdown-subline{
+
+        margin-bottom:18px;
+    }
+
+
+    .timer-grid{
+
+        gap:7px;
+    }
+
+
+    .flip-card{
+
+        height:88px;
+    }
+
+
+    .flip-card-shell{
+
+        border-radius:16px;
+    }
+
+
+    .flip-surface{
+
+        border-radius:15px;
+    }
+
+
+    .flip-number{
+
+        font-size:
+            clamp(
+                34px,
+                11vw,
+                48px
+            );
+    }
+
+
+    .timer-label{
+
+        margin-top:8px;
+
+        font-size:8px;
+
+        letter-spacing:.10em;
+    }
+
+
+    .timer-separator{
+
+        right:-7px;
+
+        font-size:18px;
+    }
+
+
+    .timer-separator::before,
+    .timer-separator::after{
+
+        width:2px;
+        height:2px;
+
+        margin:2px auto;
+    }
+
+
+    .values-section{
+
+        margin-top:14px;
+    }
+
+
+    .values-grid{
+
+        gap:7px;
+    }
+
+
+    .value-card{
+
+        min-height:111px;
+
+        padding:
+            11px
+            6px;
+
+        border-radius:15px;
+    }
+
+
+    .value-number{
+
+        width:34px;
+        height:34px;
+
+        margin-bottom:8px;
+
+        font-size:9px;
+    }
+
+
+    .value-title{
+
+        font-size:9px;
+
+        letter-spacing:.06em;
+    }
+
+
+    .value-description{
+
+        font-size:7px;
+
+        line-height:1.35;
+
+        margin-top:5px;
+    }
+
+
+    .leadership-section{
+
+        margin-top:12px;
+    }
+
+
+    .leadership-grid{
+
+        gap:8px;
+    }
+
+
+    .profile-card{
+
+        min-height:166px;
+
+        padding:
+            13px
+            10px;
+
+        border-radius:17px;
+    }
+
+
+    .profile-header{
+
+        gap:7px;
+    }
+
+
+    .profile-initial{
+
+        width:37px;
+        height:37px;
+
+        flex-basis:37px;
+
+        border-radius:10px;
+
+        font-size:13px;
+    }
+
+
+    .profile-name{
+
+        font-size:14px;
+    }
+
+
+    .profile-role{
+
+        font-size:6px;
+
+        letter-spacing:.09em;
+    }
+
+
+    .profile-details{
+
+        margin-top:13px;
+
+        gap:6px;
+    }
+
+
+    .profile-detail{
+
+        font-size:8px;
+
+        line-height:1.35;
+    }
+
+
+    .profile-detail::before{
+
+        width:4px;
+        height:4px;
+
+        flex-basis:4px;
+
+        margin-top:4px;
+    }
+
+
+    .profile-number{
+
+        font-size:70px;
+
+        right:8px;
+        bottom:-12px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    .flip-card-shell::before{
+
+        animation:none;
+    }
+
+    .flip-layer{
+
+        animation:none !important;
+    }
+
+}
+
+
+/* =========================================================
+   WEBGL FALLBACK
+========================================================= */
+
+.flag-fallback{
+
+    display:none;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+
+/* =========================================================
+   NO SELECTION
+========================================================= */
+
+body,
+button{
+
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+</style>
 </head>
+
+
 <body>
 
-    <!-- ============================================================
-    MAIN APP CONTAINER
-    ============================================================ -->
-    <div id="app-container">
 
-        <!-- CSS Sky Gradient -->
-        <div class="sky-gradient-layer"></div>
-        <div class="atmosphere-haze"></div>
-        <div class="light-rays"></div>
+<main class="page">
 
-        <!-- Canvas Layers for Dynamic Graphics -->
-        <canvas id="canvas-sky" class="canvas-layer"></canvas>
-        <canvas id="canvas-mountains" class="canvas-layer"></canvas>
-        <canvas id="canvas-effects" class="canvas-layer"></canvas>
-        <canvas id="canvas-particles" class="canvas-layer"></canvas>
-        <canvas id="canvas-birds" class="canvas-layer"></canvas>
-        <canvas id="canvas-hud-overlay" class="canvas-layer"></canvas>
 
-        <!-- Flag Pole Glow -->
-        <div class="flag-pole-glow"></div>
+    <!-- =====================================================
+         FLAG
+    ====================================================== -->
 
-        <!-- Top Visual Elements -->
-        <div class="top-visuals">
-            <div class="flag-container">
-                <div class="flag-wrapper">
-                    <img src="pak.png" alt="Pakistan Flag" loading="eager">
-                </div>
-            </div>
-            <div class="minar-container"></div>
-            <div class="minar-base-accent"></div>
+    <section class="flag-section">
+
+        <div class="flag-frame">
+
+            <canvas id="flagCanvas"></canvas>
+
+            <img
+                id="flagFallback"
+                class="flag-fallback"
+                src="pak.png"
+                alt="Pakistan Flag"
+            >
+
         </div>
 
-        <!-- Foreground HUD Interface -->
-        <div class="hud-interface">
-            <div class="title-container">
-                <h1 class="countdown-text">COUNTDOWN</h1>
-                <h2 class="excellence-text">TO EXCELLENCE</h2>
-            </div>
+    </section>
 
-            <div class="timer-box">
-                <div class="time-segment">
-                    <span class="number" id="t-days">00</span>
-                    <span class="label">DAYS</span>
-                </div>
-                <div class="time-segment">
-                    <span class="number" id="t-hours">00</span>
-                    <span class="label">HOURS</span>
-                </div>
-                <div class="time-segment">
-                    <span class="number" id="t-minutes">00</span>
-                    <span class="label">MINUTES</span>
-                </div>
-                <div class="time-segment">
-                    <span class="number" id="t-seconds">00</span>
-                    <span class="label">SECONDS</span>
-                </div>
-                <div class="remaining-badge">REMAINING</div>
-            </div>
 
-            <div class="info-text">
-                <p><span class="bracket-text">&gt;</span> SARA <span class="green-highlight">NOVAS</span> READY HO JAYIEN <span class="bracket-text">&lt;</span></p>
-                <p>FIRST WEEK TEST KA LIYA.</p>
-            </div>
+    <!-- =====================================================
+         GOLD DIVIDER
+    ====================================================== -->
 
-            <div class="independence-badge">
-                <span class="this-week">THIS WEEK</span>
-                <span class="ind-week-title">INDEPENDENCE WEEK</span>
-            </div>
+    <div class="gold-divider">
 
-            <div class="august-block">
-                <div class="fourteen-container">
-                    <span class="fourteen">14</span>
-                    <div class="mini-crescent"></div>
-                </div>
-                <span class="august-text">AUGUST</span>
-                <span class="urdu-text">میرا پاکستان - میری پہچان</span>
-            </div>
+        <span class="gold-diamond"></span>
 
-            <div class="global-time-indicator">
-                Target: <span>10 AUG 2026 · 08:00 PKT (+05:00)</span> · Universal Sync
-            </div>
-        </div>
     </div>
 
-    <!-- Bottom Left Tech Element -->
-    <svg class="corner-graphic cg-left" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <radialGradient id="glowLeft" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#00ff55" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#00ff55" stop-opacity="0"/>
-            </radialGradient>
-        </defs>
-        <circle cx="100" cy="100" r="60" fill="url(#glowLeft)" />
-        <path d="M20,150 L180,150 L160,100 L40,100 Z" fill="none" stroke="#00ff55" stroke-width="2.5"/>
-        <circle cx="100" cy="125" r="20" fill="none" stroke="#00ff55" stroke-dasharray="5 3" stroke-width="1.5"/>
-        <path d="M100,114 A 11,11 0 1,0 111,125 Z" fill="#00ff55" transform="rotate(-30 100 125)"/>
-        <circle cx="100" cy="125" r="4" fill="#00ff55" />
-        <line x1="20" y1="150" x2="40" y2="100" stroke="#00ff55" stroke-width="1" opacity="0.5"/>
-        <line x1="180" y1="150" x2="160" y2="100" stroke="#00ff55" stroke-width="1" opacity="0.5"/>
-    </svg>
 
-    <!-- Bottom Right Tech Element -->
-    <svg class="corner-graphic cg-right" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <radialGradient id="glowRight" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#00ff55" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#00ff55" stop-opacity="0"/>
-            </radialGradient>
-        </defs>
-        <circle cx="100" cy="100" r="60" fill="url(#glowRight)" />
-        <polygon points="100,28 162,64 162,136 100,172 38,136 38,64" fill="none" stroke="#00ff55" stroke-width="2.5"/>
-        <circle cx="100" cy="100" r="28" fill="none" stroke="#00ff55" stroke-width="1.5" stroke-dasharray="6 3"/>
-        <path d="M100,86 A 14,14 0 1,0 114,100 Z" fill="#00ff55" transform="rotate(-40 100 100)"/>
-        <circle cx="100" cy="100" r="5" fill="#00ff55" />
-        <line x1="38" y1="64" x2="70" y2="50" stroke="#00ff55" stroke-width="0.8" opacity="0.5"/>
-        <line x1="162" y1="64" x2="130" y2="50" stroke="#00ff55" stroke-width="0.8" opacity="0.5"/>
-    </svg>
+    <!-- =====================================================
+         COUNTDOWN
+    ====================================================== -->
 
-    <!-- Celebration Overlay -->
-    <div class="celebration-overlay" id="celebration-overlay"></div>
+    <section class="countdown-panel">
 
-    <!-- ============================================================
-    JAVASCRIPT ENGINE
-    ============================================================ -->
-    <script>
-        (function() {
-            // ============================================================
-            // UNIVERSAL COUNTDOWN LOGIC
-            // Target: 10 August 2026, 08:00 AM Pakistan Standard Time (UTC+05:00)
-            // Using ISO 8601 with explicit timezone offset ensures global sync.
-            // The .getTime() method returns UTC milliseconds, so the diff
-            // calculation is identical for all users worldwide.
-            // ============================================================
-            const TARGET_DATE_ISO = "2026-08-10T08:00:00+05:00";
-            const targetDateUTC = new Date(TARGET_DATE_ISO).getTime();
+        <h1 class="countdown-title">
+            COUNTDOWN
+        </h1>
 
-            // DOM references for countdown digits
-            const daysEl = document.getElementById('t-days');
-            const hoursEl = document.getElementById('t-hours');
-            const minutesEl = document.getElementById('t-minutes');
-            const secondsEl = document.getElementById('t-seconds');
-            const celebrationOverlay = document.getElementById('celebration-overlay');
+        <div class="countdown-subline"></div>
 
-            let countdownReachedZero = false;
-            let lastSecondValue = -1;
 
-            /**
-             * Updates the countdown display.
-             * Called every 250ms for smoothness, but only updates DOM when seconds change.
-             */
-            function updateCountdown() {
-                const nowUTC = Date.now(); // Universal UTC timestamp
-                let diffMs = targetDateUTC - nowUTC;
+        <div class="timer-grid">
 
-                // Clamp to zero (no negative values)
-                if (diffMs < 0) {
-                    diffMs = 0;
-                    if (!countdownReachedZero) {
-                        countdownReachedZero = true;
-                        triggerCelebration();
-                    }
+
+            <!-- HOURS -->
+
+            <div class="timer-item">
+
+                <div class="flip-card">
+
+                    <div class="flip-card-shell">
+
+                        <div class="flip-surface">
+
+                            <div
+                                class="flip-layer"
+                                id="hoursLayer"
+                            >
+
+                                <span
+                                    class="flip-number"
+                                    id="hoursValue"
+                                >
+                                    00
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="timer-label">
+                    Hours
+                </div>
+
+                <div class="timer-separator"></div>
+
+            </div>
+
+
+            <!-- MINUTES -->
+
+            <div class="timer-item">
+
+                <div class="flip-card">
+
+                    <div class="flip-card-shell">
+
+                        <div class="flip-surface">
+
+                            <div
+                                class="flip-layer"
+                                id="minutesLayer"
+                            >
+
+                                <span
+                                    class="flip-number"
+                                    id="minutesValue"
+                                >
+                                    00
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="timer-label">
+                    Minutes
+                </div>
+
+                <div class="timer-separator"></div>
+
+            </div>
+
+
+            <!-- SECONDS -->
+
+            <div class="timer-item">
+
+                <div class="flip-card">
+
+                    <div class="flip-card-shell">
+
+                        <div class="flip-surface">
+
+                            <div
+                                class="flip-layer"
+                                id="secondsLayer"
+                            >
+
+                                <span
+                                    class="flip-number"
+                                    id="secondsValue"
+                                >
+                                    00
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="timer-label">
+                    Seconds
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="completed-message"
+            id="completedMessage"
+        >
+            COUNTDOWN COMPLETE
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         VALUES
+    ====================================================== -->
+
+    <section class="values-section">
+
+        <div class="values-grid">
+
+
+            <!-- SINCERITY -->
+
+            <article class="value-card">
+
+                <div class="value-number">
+                    01
+                </div>
+
+                <div class="value-title">
+                    Sincerity
+                </div>
+
+                <div class="value-description">
+                    Integrity in action
+                </div>
+
+            </article>
+
+
+            <!-- PUNCTUALITY -->
+
+            <article class="value-card">
+
+                <div class="value-number">
+                    02
+                </div>
+
+                <div class="value-title">
+                    Punctuality
+                </div>
+
+                <div class="value-description">
+                    Respect for time
+                </div>
+
+            </article>
+
+
+            <!-- PATIENCE -->
+
+            <article class="value-card">
+
+                <div class="value-number">
+                    03
+                </div>
+
+                <div class="value-title">
+                    Patience
+                </div>
+
+                <div class="value-description">
+                    Strength through calm
+                </div>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LEADERSHIP
+    ====================================================== -->
+
+    <section class="leadership-section">
+
+        <div class="leadership-grid">
+
+
+            <!-- =================================================
+                 MOHSIN ALI
+            ================================================== -->
+
+            <article class="profile-card">
+
+                <div class="profile-header">
+
+                    <div class="profile-initial">
+                        M
+                    </div>
+
+                    <div>
+
+                        <div class="profile-name">
+                            Mohsin Ali
+                        </div>
+
+                        <div class="profile-role">
+                            Leadership Profile
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-details">
+
+                    <div class="profile-detail">
+                        Chief Executive Officer
+                    </div>
+
+                    <div class="profile-detail">
+                        Computer Trainer
+                    </div>
+
+                    <div class="profile-detail">
+                        Graduate (English)
+                    </div>
+
+                </div>
+
+
+                <div class="profile-number">
+                    01
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 SHABAB ALI
+            ================================================== -->
+
+            <article class="profile-card">
+
+                <div class="profile-header">
+
+                    <div class="profile-initial">
+                        S
+                    </div>
+
+                    <div>
+
+                        <div class="profile-name">
+                            Shabab Ali
+                        </div>
+
+                        <div class="profile-role">
+                            Leadership Profile
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-details">
+
+                    <div class="profile-detail">
+                        Chief of Special Command &amp; Leadership
+                        (Special Service)
+                    </div>
+
+                    <div class="profile-detail">
+                        Computer Trainer
+                    </div>
+
+                    <div class="profile-detail">
+                        Bachelor in Computer Science (Student)
+                    </div>
+
+                </div>
+
+
+                <div class="profile-number">
+                    02
+                </div>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- =========================================================
+     SOUND BUTTON
+========================================================= -->
+
+<button
+    id="soundButton"
+    aria-label="Toggle sound"
+    title="Toggle sound"
+>
+    🔇
+</button>
+
+
+
+<script>
+
+"use strict";
+
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+/*
+=========================================================
+IMPORTANT:
+
+Set your actual target date here.
+
+Format:
+
+YYYY-MM-DDTHH:MM:SS
+
+Pakistan time is UTC+05:00.
+
+Example:
+10 August 2026, 8:00 AM Pakistan time:
+
+2026-08-10T08:00:00+05:00
+
+For a future event, simply replace the date below.
+=========================================================
+*/
+
+const TARGET_DATE = "2026-08-17T08:00:00+05:00";
+
+
+/*
+=========================================================
+If your event is in the future, use for example:
+
+"2026-08-15T08:00:00+05:00"
+
+or
+
+"2026-08-14T23:59:59+05:00"
+
+=========================================================
+*/
+
+
+/* =========================================================
+   WEBGL SETUP
+========================================================= */
+
+const canvas =
+    document.getElementById(
+        "flagCanvas"
+    );
+
+const fallback =
+    document.getElementById(
+        "flagFallback"
+    );
+
+
+let gl =
+    canvas.getContext(
+        "webgl2",
+        {
+            antialias:true,
+            alpha:false,
+            powerPreference:
+                "high-performance"
+        }
+    );
+
+
+/* =========================================================
+   FALLBACK
+========================================================= */
+
+if(!gl){
+
+    canvas.style.display =
+        "none";
+
+    fallback.style.display =
+        "block";
+
+}
+
+
+/* =========================================================
+   WEBGL SHADERS
+========================================================= */
+
+if(gl){
+
+
+/* =========================================================
+   VERTEX SHADER
+========================================================= */
+
+const vertexShaderSource = `#version 300 es
+
+precision highp float;
+
+in vec2 a_position;
+in vec2 a_uv;
+
+uniform float u_time;
+uniform vec2 u_resolution;
+
+out vec2 v_uv;
+out float v_slope;
+out float v_fold;
+
+void main(){
+
+    float x = a_uv.x;
+    float y = a_uv.y;
+
+
+    float edge =
+        smoothstep(
+            0.015,
+            0.82,
+            x
+        );
+
+    edge =
+        pow(
+            edge,
+            1.20
+        );
+
+
+    float phase1 =
+        x * 8.2
+        -
+        u_time * 1.45;
+
+    float wave1 =
+        sin(phase1);
+
+
+    float phase2 =
+        x * 15.7
+        -
+        u_time * 2.20
+        +
+        0.8;
+
+    float wave2 =
+        sin(phase2);
+
+
+    float phase3 =
+        x * 27.0
+        -
+        u_time * 3.25
+        +
+        y * 1.8;
+
+    float wave3 =
+        sin(phase3);
+
+
+    float phase4 =
+        x * 48.0
+        -
+        u_time * 5.1
+        +
+        y * 4.0;
+
+    float wave4 =
+        sin(phase4);
+
+
+    float irregular =
+        sin(
+            x * 5.1
+            -
+            u_time * 0.63
+            +
+            y * 3.2
+        );
+
+
+    float wave =
+
+          wave1 * 0.58
+        + wave2 * 0.25
+        + wave3 * 0.105
+        + wave4 * 0.035
+        + irregular * 0.025;
+
+
+    float flutterEnvelope =
+        smoothstep(
+            0.48,
+            1.0,
+            x
+        );
+
+
+    float flutter =
+        sin(
+            x * 34.0
+            -
+            u_time * 5.7
+            +
+            y * 7.0
+        )
+        *
+        flutterEnvelope
+        *
+        0.012;
+
+
+    float depth =
+        wave
+        *
+        0.048
+        *
+        edge;
+
+    depth +=
+        flutter *
+        edge;
+
+
+    float gravity =
+        pow(
+            x,
+            2.8
+        )
+        *
+        0.008;
+
+
+    float widthPx =
+        min(
+            u_resolution.x * 0.93,
+            950.0
+        );
+
+
+    float heightPx =
+        widthPx *
+        2.0 /
+        3.0;
+
+
+    float width =
+        widthPx /
+        u_resolution.x;
+
+
+    float height =
+        heightPx /
+        u_resolution.y;
+
+
+    float left =
+        (1.0 - width) *
+        0.5;
+
+
+    float top =
+        (1.0 - height) *
+        0.5;
+
+
+    float finalX =
+        x;
+
+
+    float finalY =
+        y
+        +
+        depth
+        -
+        gravity;
+
+
+    float screenX =
+        left
+        +
+        finalX *
+        width;
+
+
+    float screenY =
+        top
+        +
+        finalY *
+        height;
+
+
+    float clipX =
+        screenX *
+        2.0
+        -
+        1.0;
+
+
+    float clipY =
+        1.0
+        -
+        screenY *
+        2.0;
+
+
+    gl_Position =
+        vec4(
+            clipX,
+            clipY,
+            0.0,
+            1.0
+        );
+
+
+    v_uv =
+        a_uv;
+
+
+    float slope1 =
+        cos(phase1)
+        *
+        8.2
+        *
+        0.58;
+
+
+    float slope2 =
+        cos(phase2)
+        *
+        15.7
+        *
+        0.25;
+
+
+    float slope3 =
+        cos(phase3)
+        *
+        27.0
+        *
+        0.105;
+
+
+    float slope4 =
+        cos(phase4)
+        *
+        48.0
+        *
+        0.035;
+
+
+    v_slope =
+        (
+            slope1
+            +
+            slope2
+            +
+            slope3
+            +
+            slope4
+        )
+        *
+        edge;
+
+
+    v_fold =
+        wave;
+
+}
+`;
+
+
+/* =========================================================
+   FRAGMENT SHADER
+========================================================= */
+
+const fragmentShaderSource = `#version 300 es
+
+precision highp float;
+
+uniform sampler2D u_texture;
+
+in vec2 v_uv;
+in float v_slope;
+in float v_fold;
+
+out vec4 outColor;
+
+
+float hash(vec2 p){
+
+    return fract(
+        sin(
+            dot(
+                p,
+                vec2(
+                    127.1,
+                    311.7
+                )
+            )
+        )
+        *
+        43758.5453
+    );
+
+}
+
+
+float noise(vec2 p){
+
+    vec2 i =
+        floor(p);
+
+    vec2 f =
+        fract(p);
+
+    f =
+        f *
+        f *
+        (
+            3.0
+            -
+            2.0*f
+        );
+
+
+    float a =
+        hash(i);
+
+    float b =
+        hash(
+            i +
+            vec2(
+                1.0,
+                0.0
+            )
+        );
+
+    float c =
+        hash(
+            i +
+            vec2(
+                0.0,
+                1.0
+            )
+        );
+
+    float d =
+        hash(
+            i +
+            vec2(
+                1.0,
+                1.0
+            )
+        );
+
+
+    return mix(
+        mix(
+            a,
+            b,
+            f.x
+        ),
+        mix(
+            c,
+            d,
+            f.x
+        ),
+        f.y
+    );
+
+}
+
+
+float fabricWeave(vec2 uv){
+
+    float horizontal =
+        sin(
+            uv.y *
+            1150.0
+        );
+
+
+    float vertical =
+        sin(
+            uv.x *
+            1150.0
+        );
+
+
+    float fine =
+        horizontal *
+        vertical;
+
+
+    float secondary =
+        sin(
+            uv.x *
+            575.0
+            +
+            uv.y *
+            18.0
+        );
+
+
+    return
+        fine * 0.65
+        +
+        secondary * 0.35;
+
+}
+
+
+void main(){
+
+    vec4 tex =
+        texture(
+            u_texture,
+            v_uv
+        );
+
+
+    float slope =
+        v_slope;
+
+
+    float highlights =
+        smoothstep(
+            0.0,
+            5.0,
+            slope
+        );
+
+
+    float shadows =
+        smoothstep(
+            0.0,
+            5.0,
+            -slope
+        );
+
+
+    float foldLight =
+        1.0;
+
+
+    foldLight +=
+        highlights *
+        0.115;
+
+
+    foldLight -=
+        shadows *
+        0.105;
+
+
+    float broadFold =
+        sin(
+            v_fold *
+            2.7
+        );
+
+
+    foldLight +=
+        broadFold *
+        0.022;
+
+
+    float softNoise =
+        noise(
+            v_uv *
+            130.0
+        );
+
+
+    float fabricVariation =
+        1.0
+        +
+        (
+            softNoise
+            -
+            0.5
+        )
+        *
+        0.012;
+
+
+    float weave =
+        fabricWeave(
+            v_uv
+        );
+
+
+    float weaveEffect =
+        1.0
+        +
+        weave *
+        0.006;
+
+
+    float silkHighlight =
+        pow(
+            max(
+                0.0,
+                1.0 -
+                abs(slope) *
+                0.11
+            ),
+            6.0
+        )
+        *
+        0.018;
+
+
+    vec3 finalColor =
+        tex.rgb
+        *
+        foldLight
+        *
+        fabricVariation
+        *
+        weaveEffect;
+
+
+    finalColor +=
+        tex.rgb *
+        silkHighlight;
+
+
+    finalColor =
+        clamp(
+            finalColor,
+            0.0,
+            1.0
+        );
+
+
+    outColor =
+        vec4(
+            finalColor,
+            tex.a
+        );
+
+}
+`;
+
+
+/* =========================================================
+   SHADER COMPILER
+========================================================= */
+
+function compileShader(
+    type,
+    source
+){
+
+    const shader =
+        gl.createShader(type);
+
+
+    gl.shaderSource(
+        shader,
+        source
+    );
+
+
+    gl.compileShader(
+        shader
+    );
+
+
+    if(
+        !gl.getShaderParameter(
+            shader,
+            gl.COMPILE_STATUS
+        )
+    ){
+
+        console.error(
+            gl.getShaderInfoLog(
+                shader
+            )
+        );
+
+        throw new Error(
+            "WebGL shader compilation failed."
+        );
+
+    }
+
+
+    return shader;
+
+}
+
+
+/* =========================================================
+   PROGRAM
+========================================================= */
+
+const vertexShader =
+    compileShader(
+        gl.VERTEX_SHADER,
+        vertexShaderSource
+    );
+
+
+const fragmentShader =
+    compileShader(
+        gl.FRAGMENT_SHADER,
+        fragmentShaderSource
+    );
+
+
+const program =
+    gl.createProgram();
+
+
+gl.attachShader(
+    program,
+    vertexShader
+);
+
+
+gl.attachShader(
+    program,
+    fragmentShader
+);
+
+
+gl.linkProgram(
+    program
+);
+
+
+if(
+    !gl.getProgramParameter(
+        program,
+        gl.LINK_STATUS
+    )
+){
+
+    throw new Error(
+        gl.getProgramInfoLog(
+            program
+        )
+    );
+
+}
+
+
+gl.useProgram(
+    program
+);
+
+
+/* =========================================================
+   CLOTH GRID
+========================================================= */
+
+const X_SEGMENTS =
+    220;
+
+const Y_SEGMENTS =
+    110;
+
+
+const positions = [];
+const uvs = [];
+const indices = [];
+
+
+for(
+    let y = 0;
+    y <= Y_SEGMENTS;
+    y++
+){
+
+    for(
+        let x = 0;
+        x <= X_SEGMENTS;
+        x++
+    ){
+
+        const px =
+            x /
+            X_SEGMENTS;
+
+        const py =
+            y /
+            Y_SEGMENTS;
+
+
+        positions.push(
+            px,
+            py
+        );
+
+
+        uvs.push(
+            px,
+            1.0 - py
+        );
+
+    }
+
+}
+
+
+const rowSize =
+    X_SEGMENTS + 1;
+
+
+for(
+    let y = 0;
+    y < Y_SEGMENTS;
+    y++
+){
+
+    for(
+        let x = 0;
+        x < X_SEGMENTS;
+        x++
+    ){
+
+        const a =
+            y *
+            rowSize +
+            x;
+
+
+        const b =
+            a + 1;
+
+
+        const c =
+            a +
+            rowSize;
+
+
+        const d =
+            c + 1;
+
+
+        indices.push(
+            a,c,b,
+            b,c,d
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   POSITION BUFFER
+========================================================= */
+
+const positionBuffer =
+    gl.createBuffer();
+
+
+gl.bindBuffer(
+    gl.ARRAY_BUFFER,
+    positionBuffer
+);
+
+
+gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array(
+        positions
+    ),
+    gl.STATIC_DRAW
+);
+
+
+const positionLocation =
+    gl.getAttribLocation(
+        program,
+        "a_position"
+    );
+
+
+gl.enableVertexAttribArray(
+    positionLocation
+);
+
+
+gl.vertexAttribPointer(
+    positionLocation,
+    2,
+    gl.FLOAT,
+    false,
+    0,
+    0
+);
+
+
+/* =========================================================
+   UV BUFFER
+========================================================= */
+
+const uvBuffer =
+    gl.createBuffer();
+
+
+gl.bindBuffer(
+    gl.ARRAY_BUFFER,
+    uvBuffer
+);
+
+
+gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array(
+        uvs
+    ),
+    gl.STATIC_DRAW
+);
+
+
+const uvLocation =
+    gl.getAttribLocation(
+        program,
+        "a_uv"
+    );
+
+
+gl.enableVertexAttribArray(
+    uvLocation
+);
+
+
+gl.vertexAttribPointer(
+    uvLocation,
+    2,
+    gl.FLOAT,
+    false,
+    0,
+    0
+);
+
+
+/* =========================================================
+   INDEX BUFFER
+========================================================= */
+
+const indexBuffer =
+    gl.createBuffer();
+
+
+gl.bindBuffer(
+    gl.ELEMENT_ARRAY_BUFFER,
+    indexBuffer
+);
+
+
+gl.bufferData(
+    gl.ELEMENT_ARRAY_BUFFER,
+    new Uint32Array(
+        indices
+    ),
+    gl.STATIC_DRAW
+);
+
+
+/* =========================================================
+   UNIFORMS
+========================================================= */
+
+const timeLocation =
+    gl.getUniformLocation(
+        program,
+        "u_time"
+    );
+
+
+const resolutionLocation =
+    gl.getUniformLocation(
+        program,
+        "u_resolution"
+    );
+
+
+const textureLocation =
+    gl.getUniformLocation(
+        program,
+        "u_texture"
+    );
+
+
+/* =========================================================
+   FLAG TEXTURE
+========================================================= */
+
+const texture =
+    gl.createTexture();
+
+
+const image =
+    new Image();
+
+
+image.onload =
+function(){
+
+    gl.bindTexture(
+        gl.TEXTURE_2D,
+        texture
+    );
+
+
+    gl.pixelStorei(
+        gl.UNPACK_FLIP_Y_WEBGL,
+        false
+    );
+
+
+    gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        image
+    );
+
+
+    gl.texParameteri(
+        gl.TEXTURE_2D,
+        gl.TEXTURE_MIN_FILTER,
+        gl.LINEAR_MIPMAP_LINEAR
+    );
+
+
+    gl.texParameteri(
+        gl.TEXTURE_2D,
+        gl.TEXTURE_MAG_FILTER,
+        gl.LINEAR
+    );
+
+
+    gl.texParameteri(
+        gl.TEXTURE_2D,
+        gl.TEXTURE_WRAP_S,
+        gl.CLAMP_TO_EDGE
+    );
+
+
+    gl.texParameteri(
+        gl.TEXTURE_2D,
+        gl.TEXTURE_WRAP_T,
+        gl.CLAMP_TO_EDGE
+    );
+
+
+    gl.generateMipmap(
+        gl.TEXTURE_2D
+    );
+
+
+    requestAnimationFrame(
+        renderFlag
+    );
+
+};
+
+
+image.onerror =
+function(){
+
+    canvas.style.display =
+        "none";
+
+    fallback.style.display =
+        "block";
+
+};
+
+
+image.src =
+    "pak.png";
+
+
+/* =========================================================
+   WEBGL RESIZE
+========================================================= */
+
+function resizeFlag(){
+
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+
+    canvas.width =
+        Math.floor(
+            rect.width *
+            dpr
+        );
+
+
+    canvas.height =
+        Math.floor(
+            rect.height *
+            dpr
+        );
+
+
+    gl.viewport(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeFlag
+);
+
+
+resizeFlag();
+
+
+/* =========================================================
+   FLAG RENDER
+========================================================= */
+
+function renderFlag(){
+
+    const time =
+        performance.now() /
+        1000;
+
+
+    gl.clearColor(
+        1,
+        1,
+        1,
+        1
+    );
+
+
+    gl.clear(
+        gl.COLOR_BUFFER_BIT
+    );
+
+
+    gl.useProgram(
+        program
+    );
+
+
+    gl.uniform1f(
+        timeLocation,
+        time
+    );
+
+
+    gl.uniform2f(
+        resolutionLocation,
+        canvas.width,
+        canvas.height
+    );
+
+
+    gl.activeTexture(
+        gl.TEXTURE0
+    );
+
+
+    gl.bindTexture(
+        gl.TEXTURE_2D,
+        texture
+    );
+
+
+    gl.uniform1i(
+        textureLocation,
+        0
+    );
+
+
+    gl.bindBuffer(
+        gl.ELEMENT_ARRAY_BUFFER,
+        indexBuffer
+    );
+
+
+    gl.drawElements(
+        gl.TRIANGLES,
+        indices.length,
+        gl.UNSIGNED_INT,
+        0
+    );
+
+
+    updateWindSound(
+        time
+    );
+
+
+    requestAnimationFrame(
+        renderFlag
+    );
+
+}
+
+}
+
+
+/* =========================================================
+   COUNTDOWN SYSTEM
+========================================================= */
+
+const hoursValue =
+    document.getElementById(
+        "hoursValue"
+    );
+
+const minutesValue =
+    document.getElementById(
+        "minutesValue"
+    );
+
+const secondsValue =
+    document.getElementById(
+        "secondsValue"
+    );
+
+
+const hoursLayer =
+    document.getElementById(
+        "hoursLayer"
+    );
+
+const minutesLayer =
+    document.getElementById(
+        "minutesLayer"
+    );
+
+const secondsLayer =
+    document.getElementById(
+        "secondsLayer"
+    );
+
+
+const completedMessage =
+    document.getElementById(
+        "completedMessage"
+    );
+
+
+/* =========================================================
+   AUDIO SYSTEM
+========================================================= */
+
+let audioContext =
+    null;
+
+let audioEnabled =
+    false;
+
+let windSource =
+    null;
+
+let windFilter =
+    null;
+
+let windGain =
+    null;
+
+let flipGain =
+    null;
+
+
+/* =========================================================
+   CREATE AUDIO
+========================================================= */
+
+function ensureAudio(){
+
+    if(audioContext){
+
+        if(
+            audioContext.state ===
+            "suspended"
+        ){
+
+            audioContext.resume();
+
+        }
+
+        return true;
+
+    }
+
+
+    const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+
+    if(!AudioContext){
+
+        return false;
+
+    }
+
+
+    audioContext =
+        new AudioContext();
+
+
+    /* =====================================================
+       WIND
+    ===================================================== */
+
+    const sampleRate =
+        audioContext.sampleRate;
+
+
+    const length =
+        sampleRate * 2;
+
+
+    const buffer =
+        audioContext.createBuffer(
+            1,
+            length,
+            sampleRate
+        );
+
+
+    const data =
+        buffer.getChannelData(0);
+
+
+    let last = 0;
+
+
+    for(
+        let i = 0;
+        i < length;
+        i++
+    ){
+
+        const white =
+            Math.random() *
+            2 -
+            1;
+
+
+        last =
+            last *
+            0.985
+            +
+            white *
+            0.15;
+
+
+        data[i] =
+            last;
+
+    }
+
+
+    windSource =
+        audioContext.createBufferSource();
+
+
+    windSource.buffer =
+        buffer;
+
+
+    windSource.loop =
+        true;
+
+
+    windFilter =
+        audioContext.createBiquadFilter();
+
+
+    windFilter.type =
+        "lowpass";
+
+
+    windFilter.frequency.value =
+        850;
+
+
+    windFilter.Q.value =
+        .55;
+
+
+    windGain =
+        audioContext.createGain();
+
+
+    windGain.gain.value =
+        .0001;
+
+
+    windSource
+        .connect(
+            windFilter
+        )
+        .connect(
+            windGain
+        )
+        .connect(
+            audioContext.destination
+        );
+
+
+    windSource.start();
+
+
+    /* =====================================================
+       FLIP MASTER GAIN
+    ===================================================== */
+
+    flipGain =
+        audioContext.createGain();
+
+
+    flipGain.gain.value =
+        .55;
+
+
+    flipGain.connect(
+        audioContext.destination
+    );
+
+
+    audioEnabled =
+        true;
+
+
+    document
+        .getElementById(
+            "soundButton"
+        )
+        .textContent =
+        "🔊";
+
+
+    document
+        .getElementById(
+            "soundButton"
+        )
+        .classList
+        .add("on");
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   PHYSICAL CARD FLIP SOUND
+
+   Short paper/card-like layered sound.
+========================================================= */
+
+function playFlipSound(){
+
+    if(!audioContext)
+        return;
+
+
+    if(
+        audioContext.state !==
+        "running"
+    ){
+
+        audioContext.resume();
+
+    }
+
+
+    const now =
+        audioContext.currentTime;
+
+
+    /*
+    =====================================================
+    BODY "WHOOSH"
+    =====================================================
+    */
+
+    const oscillator =
+        audioContext.createOscillator();
+
+
+    const gain =
+        audioContext.createGain();
+
+
+    oscillator.type =
+        "triangle";
+
+
+    oscillator.frequency.setValueAtTime(
+        180,
+        now
+    );
+
+
+    oscillator.frequency.exponentialRampToValueAtTime(
+        72,
+        now + .16
+    );
+
+
+    gain.gain.setValueAtTime(
+        .0001,
+        now
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+        .16,
+        now + .018
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+        .0001,
+        now + .18
+    );
+
+
+    oscillator
+        .connect(gain)
+        .connect(flipGain);
+
+
+    oscillator.start(now);
+
+    oscillator.stop(
+        now + .19
+    );
+
+
+    /*
+    =====================================================
+    SOFT CARD SNAP
+    =====================================================
+    */
+
+    const click =
+        audioContext.createOscillator();
+
+
+    const clickGain =
+        audioContext.createGain();
+
+
+    click.type =
+        "sine";
+
+
+    click.frequency.setValueAtTime(
+        820,
+        now
+    );
+
+
+    click.frequency.exponentialRampToValueAtTime(
+        240,
+        now + .07
+    );
+
+
+    clickGain.gain.setValueAtTime(
+        .0001,
+        now
+    );
+
+
+    clickGain.gain.exponentialRampToValueAtTime(
+        .075,
+        now + .008
+    );
+
+
+    clickGain.gain.exponentialRampToValueAtTime(
+        .0001,
+        now + .075
+    );
+
+
+    click
+        .connect(clickGain)
+        .connect(flipGain);
+
+
+    click.start(now);
+
+    click.stop(
+        now + .08
+    );
+
+}
+
+
+/* =========================================================
+   WIND SOUND UPDATE
+========================================================= */
+
+function updateWindSound(time){
+
+    if(
+        !audioEnabled ||
+        !audioContext ||
+        audioContext.state !==
+        "running" ||
+        !windGain
+    ){
+
+        return;
+
+    }
+
+
+    const slow =
+        (
+            Math.sin(
+                time * .42
+            )
+            +
+            1
+        )
+        *
+        .5;
+
+
+    const medium =
+        (
+            Math.sin(
+                time * 1.17
+                +
+                1.8
+            )
+            +
+            1
+        )
+        *
+        .5;
+
+
+    const strength =
+        .20
+        +
+        slow * .38
+        +
+        medium * .18;
+
+
+    const volume =
+        .006
+        +
+        strength *
+        .012;
+
+
+    windGain.gain.setTargetAtTime(
+        volume,
+        audioContext.currentTime,
+        .12
+    );
+
+
+    windFilter.frequency.setTargetAtTime(
+        600 +
+        strength * 1000,
+        audioContext.currentTime,
+        .15
+    );
+
+}
+
+
+/* =========================================================
+   SOUND BUTTON
+========================================================= */
+
+document
+    .getElementById(
+        "soundButton"
+    )
+    .addEventListener(
+        "click",
+        async function(){
+
+            if(!audioEnabled){
+
+                ensureAudio();
+
+                if(audioContext){
+
+                    await audioContext.resume();
+
                 }
 
-                const totalSeconds = Math.floor(diffMs / 1000);
-                const days = Math.floor(totalSeconds / 86400);
-                const hours = Math.floor((totalSeconds % 86400) / 3600);
-                const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = totalSeconds % 60;
+                return;
 
-                // Only update DOM when the second value changes (reduces repaints)
-                if (seconds !== lastSecondValue || countdownReachedZero) {
-                    daysEl.innerText = days.toString().padStart(2, '0');
-                    hoursEl.innerText = hours.toString().padStart(2, '0');
-                    minutesEl.innerText = minutes.toString().padStart(2, '0');
-                    secondsEl.innerText = seconds.toString().padStart(2, '0');
-
-                    // Flash effect on seconds change
-                    secondsEl.classList.add('flash');
-                    setTimeout(() => secondsEl.classList.remove('flash'), 150);
-
-                    lastSecondValue = seconds;
-                }
-
-                // If countdown has reached zero, keep displaying zeros
-                if (countdownReachedZero && diffMs === 0) {
-                    daysEl.innerText = '00';
-                    hoursEl.innerText = '00';
-                    minutesEl.innerText = '00';
-                    secondsEl.innerText = '00';
-                }
             }
 
-            /**
-             * Triggers celebration effects when countdown reaches zero.
-             */
-            function triggerCelebration() {
-                celebrationOverlay.classList.add('active');
-                // Create a burst of celebration particles
-                if (typeof createCelebrationBurst === 'function') {
-                    createCelebrationBurst();
-                }
-                // Flash the timer box
-                const timerBox = document.querySelector('.timer-box');
-                if (timerBox) {
-                    timerBox.style.boxShadow =
-                        '0 0 60px rgba(0,255,85,0.8), 0 0 120px rgba(0,255,85,0.5), 0 0 200px rgba(0,255,85,0.3)';
-                    setTimeout(() => {
-                        timerBox.style.boxShadow = '';
-                    }, 3000);
-                }
+
+            if(
+                audioContext.state ===
+                "running"
+            ){
+
+                await audioContext.suspend();
+
+
+                this.textContent =
+                    "🔇";
+
+
+                this.classList
+                    .remove("on");
+
             }
 
-            // Initial call and set interval (runs every 250ms for responsiveness)
+            else{
+
+                await audioContext.resume();
+
+
+                this.textContent =
+                    "🔊";
+
+
+                this.classList
+                    .add("on");
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   FIRST USER INTERACTION
+========================================================= */
+
+document.addEventListener(
+    "pointerdown",
+    function(){
+
+        if(!audioEnabled){
+
+            ensureAudio();
+
+        }
+
+    },
+    {
+        once:true,
+        passive:true
+    }
+);
+
+
+/* =========================================================
+   FORMAT
+========================================================= */
+
+function pad(
+    value
+){
+
+    return String(
+        Math.max(
+            0,
+            value
+        )
+    ).padStart(
+        2,
+        "0"
+    );
+
+}
+
+
+/* =========================================================
+   FLIP VALUE
+========================================================= */
+
+function flipValue(
+    layer,
+    valueElement,
+    newValue
+){
+
+    const oldValue =
+        valueElement.textContent;
+
+
+    if(
+        oldValue ===
+        newValue
+    ){
+
+        return;
+
+    }
+
+
+    /*
+    =====================================================
+    NEW LAYER
+
+    We create a completely independent physical card
+    so the old number can leave while the new number enters.
+    =====================================================
+    */
+
+    const newLayer =
+        document.createElement(
+            "div"
+        );
+
+
+    newLayer.className =
+        "flip-layer";
+
+
+    const number =
+        document.createElement(
+            "span"
+        );
+
+
+    number.className =
+        "flip-number";
+
+
+    number.textContent =
+        newValue;
+
+
+    newLayer.appendChild(
+        number
+    );
+
+
+    const surface =
+        layer.parentElement;
+
+
+    surface.appendChild(
+        newLayer
+    );
+
+
+    const oldLayer =
+        layer;
+
+
+    /*
+    =====================================================
+    INITIAL STATE
+    =====================================================
+    */
+
+    newLayer.style.transform =
+        "rotateX(180deg)";
+
+
+    newLayer.style.opacity =
+        "0";
+
+
+    /*
+    =====================================================
+    FORCE BROWSER LAYOUT
+
+    This is important for reliable mobile animation.
+    =====================================================
+    */
+
+    void newLayer.offsetHeight;
+
+
+    oldLayer.classList.add(
+        "flip-out"
+    );
+
+
+    newLayer.classList.add(
+        "flip-in"
+    );
+
+
+    /*
+    =====================================================
+    SOUND AT FLIP START
+    =====================================================
+    */
+
+    if(audioEnabled){
+
+        playFlipSound();
+
+    }
+
+
+    /*
+    =====================================================
+    CLEANUP
+    =====================================================
+    */
+
+    setTimeout(
+        function(){
+
+            oldLayer.remove();
+
+            newLayer.classList.remove(
+                "flip-in"
+            );
+
+
+            newLayer.style.transform =
+                "rotateX(0deg)";
+
+
+            newLayer.style.opacity =
+                "1";
+
+
+            /*
+            Replace reference
+            */
+
+            if(
+                oldLayer ===
+                hoursLayer
+            ){
+
+                hoursValue.textContent =
+                    newValue;
+
+            }
+
+            else if(
+                oldLayer ===
+                minutesLayer
+            ){
+
+                minutesValue.textContent =
+                    newValue;
+
+            }
+
+            else if(
+                oldLayer ===
+                secondsLayer
+            ){
+
+                secondsValue.textContent =
+                    newValue;
+
+            }
+
+        },
+        640
+    );
+
+}
+
+
+/* =========================================================
+   BETTER FLIP SYSTEM
+
+   Because the layer DOM changes, we use the current
+   layer directly for each timer.
+========================================================= */
+
+const timerState = {
+
+    hours:
+        "00",
+
+    minutes:
+        "00",
+
+    seconds:
+        "00"
+
+};
+
+
+function performFlip(
+    container,
+    type,
+    value
+){
+
+    const current =
+        timerState[type];
+
+
+    if(
+        current ===
+        value
+    ){
+
+        return;
+
+    }
+
+
+    const surface =
+        container
+            .querySelector(
+                ".flip-surface"
+            );
+
+
+    const oldLayer =
+        surface.querySelector(
+            ".flip-layer"
+        );
+
+
+    if(!oldLayer)
+        return;
+
+
+    const newLayer =
+        document.createElement(
+            "div"
+        );
+
+
+    newLayer.className =
+        "flip-layer";
+
+
+    const number =
+        document.createElement(
+            "span"
+        );
+
+
+    number.className =
+        "flip-number";
+
+
+    number.textContent =
+        value;
+
+
+    newLayer.appendChild(
+        number
+    );
+
+
+    surface.appendChild(
+        newLayer
+    );
+
+
+    newLayer.style.transform =
+        "rotateX(180deg)";
+
+
+    newLayer.style.opacity =
+        "0";
+
+
+    void newLayer.offsetHeight;
+
+
+    oldLayer.classList.add(
+        "flip-out"
+    );
+
+
+    newLayer.classList.add(
+        "flip-in"
+    );
+
+
+    if(audioEnabled){
+
+        playFlipSound();
+
+    }
+
+
+    timerState[type] =
+        value;
+
+
+    setTimeout(
+        function(){
+
+            oldLayer.remove();
+
+            newLayer.classList.remove(
+                "flip-in"
+            );
+
+            newLayer.style.transform =
+                "rotateX(0deg)";
+
+            newLayer.style.opacity =
+                "1";
+
+        },
+        650
+    );
+
+}
+
+
+/* =========================================================
+   TIMER ELEMENTS
+========================================================= */
+
+const hoursContainer =
+    document
+        .getElementById(
+            "hoursValue"
+        )
+        .closest(
+            ".timer-item"
+        );
+
+
+const minutesContainer =
+    document
+        .getElementById(
+            "minutesValue"
+        )
+        .closest(
+            ".timer-item"
+        );
+
+
+const secondsContainer =
+    document
+        .getElementById(
+            "secondsValue"
+        )
+        .closest(
+            ".timer-item"
+        );
+
+
+/* =========================================================
+   COUNTDOWN CALCULATION
+========================================================= */
+
+function getRemaining(){
+
+    const target =
+        new Date(
+            TARGET_DATE
+        ).getTime();
+
+
+    const now =
+        Date.now();
+
+
+    let difference =
+        target -
+        now;
+
+
+    if(
+        !Number.isFinite(
+            target
+        )
+    ){
+
+        return null;
+
+    }
+
+
+    if(
+        difference <=
+        0
+    ){
+
+        difference = 0;
+
+    }
+
+
+    const totalSeconds =
+        Math.floor(
+            difference /
+            1000
+        );
+
+
+    const hours =
+        Math.floor(
+            totalSeconds /
+            3600
+        );
+
+
+    const minutes =
+        Math.floor(
+            (
+                totalSeconds %
+                3600
+            ) /
+            60
+        );
+
+
+    const seconds =
+        totalSeconds %
+        60;
+
+
+    return {
+
+        hours,
+        minutes,
+        seconds,
+
+        totalSeconds
+
+    };
+
+}
+
+
+/* =========================================================
+   UPDATE COUNTDOWN
+========================================================= */
+
+let countdownFinished =
+    false;
+
+
+function updateCountdown(){
+
+    const remaining =
+        getRemaining();
+
+
+    if(!remaining){
+
+        return;
+
+    }
+
+
+    const h =
+        pad(
+            remaining.hours
+        );
+
+
+    const m =
+        pad(
+            remaining.minutes
+        );
+
+
+    const s =
+        pad(
+            remaining.seconds
+        );
+
+
+    performFlip(
+        hoursContainer,
+        "hours",
+        h
+    );
+
+
+    performFlip(
+        minutesContainer,
+        "minutes",
+        m
+    );
+
+
+    performFlip(
+        secondsContainer,
+        "seconds",
+        s
+    );
+
+
+    if(
+        remaining.totalSeconds ===
+        0
+    ){
+
+        if(!countdownFinished){
+
+            countdownFinished =
+                true;
+
+
+            completedMessage.style.display =
+                "block";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIAL TIMER VALUES
+========================================================= */
+
+const initial =
+    getRemaining();
+
+
+if(initial){
+
+    const h =
+        pad(
+            initial.hours
+        );
+
+    const m =
+        pad(
+            initial.minutes
+        );
+
+    const s =
+        pad(
+            initial.seconds
+        );
+
+
+    timerState.hours =
+        h;
+
+    timerState.minutes =
+        m;
+
+    timerState.seconds =
+        s;
+
+
+    document
+        .getElementById(
+            "hoursValue"
+        )
+        .textContent =
+        h;
+
+
+    document
+        .getElementById(
+            "minutesValue"
+        )
+        .textContent =
+        m;
+
+
+    document
+        .getElementById(
+            "secondsValue"
+        )
+        .textContent =
+        s;
+
+}
+
+
+/* =========================================================
+   ACCURATE TIMER LOOP
+
+   Uses one-second alignment instead of simply relying
+   on setInterval drift.
+========================================================= */
+
+function timerLoop(){
+
+    updateCountdown();
+
+
+    const delay =
+        1000 -
+        (
+            Date.now() %
+            1000
+        );
+
+
+    setTimeout(
+        timerLoop,
+        delay + 5
+    );
+
+}
+
+
+timerLoop();
+
+
+/* =========================================================
+   VISIBILITY RECOVERY
+
+   Keeps timer correct when browser tab was sleeping.
+========================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function(){
+
+        if(
+            !document.hidden
+        ){
+
             updateCountdown();
-            const countdownInterval = setInterval(updateCountdown, 250);
 
-            // ============================================================
-            // CANVAS ENGINE - MULTI-LAYER RENDERING SYSTEM
-            // ============================================================
+        }
 
-            // ---- Canvas References ----
-            const canvasSky = document.getElementById('canvas-sky');
-            const ctxSky = canvasSky.getContext('2d', { alpha: true });
-            const canvasMountains = document.getElementById('canvas-mountains');
-            const ctxMountains = canvasMountains.getContext('2d', { alpha: true });
-            const canvasEffects = document.getElementById('canvas-effects');
-            const ctxEffects = canvasEffects.getContext('2d', { alpha: true });
-            const canvasParticles = document.getElementById('canvas-particles');
-            const ctxParticles = canvasParticles.getContext('2d', { alpha: true });
-            const canvasBirds = document.getElementById('canvas-birds');
-            const ctxBirds = canvasBirds.getContext('2d', { alpha: true });
-            const canvasHUD = document.getElementById('canvas-hud-overlay');
-            const ctxHUD = canvasHUD.getContext('2d', { alpha: true });
+    }
+);
 
-            // ---- Global State ----
-            let W, H;
-            let globalTime = 0;
-            let animationFrameId;
 
-            // ============================================================
-            // STARFIELD SYSTEM (Canvas Sky Layer)
-            // ============================================================
-            class Star {
-                constructor() {
-                    this.reset(true);
-                }
-                reset(initial = false) {
-                    this.x = Math.random() * W;
-                    this.y = initial ? Math.random() * H * 0.7 : Math.random() * H * 0.55;
-                    this.baseSize = Math.random() * 2.2 + 0.3;
-                    this.size = this.baseSize;
-                    this.twinkleSpeed = Math.random() * 0.03 + 0.008;
-                    this.twinkleOffset = Math.random() * Math.PI * 2;
-                    this.opacity = Math.random() * 0.8 + 0.2;
-                    this.hue = Math.random() < 0.12 ?
-                        (Math.random() < 0.5 ? 40 : 200) // Some golden or bluish stars
-                        :
-                        120; // Most are greenish-white
-                    this.saturation = Math.random() < 0.12 ? 30 : 5;
-                }
-                update(time) {
-                    this.size = this.baseSize + Math.sin(time * this.twinkleSpeed + this.twinkleOffset) *
-                        this.baseSize * 0.6;
-                    this.opacity = 0.3 + Math.abs(Math.sin(time * this.twinkleSpeed + this.twinkleOffset)) * 0.7;
-                }
-                draw(ctx) {
-                    const alpha = Math.max(0.08, this.opacity);
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, Math.max(0.2, this.size), 0, Math.PI * 2);
-                    const color =
-                        `hsla(${this.hue}, ${this.saturation}%, 85%, ${alpha})`;
-                    ctx.fillStyle = color;
-                    ctx.shadowBlur = this.size * 3;
-                    ctx.shadowColor = `hsla(${this.hue}, 40%, 70%, ${alpha * 0.7})`;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                }
-            }
+/* =========================================================
+   PAGE LOAD AUDIO SAFETY
+========================================================= */
 
-            const stars = [];
-            const STAR_COUNT = 180;
+window.addEventListener(
+    "load",
+    function(){
 
-            function initStars() {
-                stars.length = 0;
-                for (let i = 0; i < STAR_COUNT; i++) {
-                    stars.push(new Star());
-                }
-            }
+        /*
+        Do not force audio before user interaction.
+        Browser autoplay policies block it.
+        */
 
-            function renderSky(time) {
-                ctxSky.clearRect(0, 0, W, H);
-                // Draw subtle gradient at top
-                const skyGrad = ctxSky.createRadialGradient(W * 0.3, H * 0.08, W * 0.1, W * 0.5, H * 0.4, W * 1.1);
-                skyGrad.addColorStop(0, 'rgba(8, 20, 35, 0.6)');
-                skyGrad.addColorStop(0.5, 'rgba(4, 14, 22, 0.3)');
-                skyGrad.addColorStop(1, 'rgba(1, 8, 4, 0)');
-                ctxSky.fillStyle = skyGrad;
-                ctxSky.fillRect(0, 0, W, H);
+    }
+);
 
-                stars.forEach(star => {
-                    star.update(time);
-                    star.draw(ctxSky);
-                });
+</script>
 
-                // Draw crescent moon
-                drawCrescentMoon(ctxSky, time);
-            }
-
-            /**
-             * Draws a glowing crescent moon in the upper portion of the sky.
-             */
-            function drawCrescentMoon(ctx, time) {
-                const moonX = W * 0.78;
-                const moonY = H * 0.13;
-                const moonRadius = Math.min(W, H) * 0.06;
-
-                // Moon glow
-                const glowGrad = ctx.createRadialGradient(moonX, moonY, moonRadius * 0.7, moonX, moonY, moonRadius * 3.5);
-                glowGrad.addColorStop(0, 'rgba(255, 252, 240, 0.35)');
-                glowGrad.addColorStop(0.4, 'rgba(255, 250, 230, 0.12)');
-                glowGrad.addColorStop(1, 'rgba(255, 240, 200, 0)');
-                ctx.fillStyle = glowGrad;
-                ctx.beginPath();
-                ctx.arc(moonX, moonY, moonRadius * 3.5, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Crescent shape (outer circle minus inner circle offset)
-                ctx.save();
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.beginPath();
-                ctx.arc(moonX + moonRadius * 0.35, moonY - moonRadius * 0.2, moonRadius * 0.85, 0, Math.PI * 2);
-                ctx.fillStyle = 'white';
-                ctx.fill();
-                ctx.restore();
-
-                // Draw the crescent
-                ctx.beginPath();
-                ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
-                ctx.fillStyle = '#fafaf0';
-                ctx.fill();
-
-                // Cut out inner portion
-                ctx.save();
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.beginPath();
-                ctx.arc(moonX + moonRadius * 0.35, moonY - moonRadius * 0.2, moonRadius * 0.82, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-
-                // Subtle shimmer on moon edge
-                ctx.beginPath();
-                ctx.arc(moonX - moonRadius * 0.15, moonY - moonRadius * 0.25, moonRadius * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255,255,255,0.5)';
-                ctx.fill();
-            }
-
-            // ============================================================
-            // MOUNTAIN SYSTEM (Canvas Mountains Layer)
-            // ============================================================
-            class MountainRange {
-                constructor(points, color, yOffset, opacity) {
-                    this.points = points; // Array of {x, y} ratios
-                    this.color = color;
-                    this.yOffset = yOffset;
-                    this.opacity = opacity;
-                    this.resolvedPoints = [];
-                }
-                resolvePoints(w, h) {
-                    this.resolvedPoints = this.points.map(p => ({
-                        x: p.x * w,
-                        y: p.y * h + this.yOffset * h
-                    }));
-                }
-                draw(ctx, w, h) {
-                    if (this.resolvedPoints.length < 3) return;
-                    ctx.beginPath();
-                    ctx.moveTo(this.resolvedPoints[0].x, this.resolvedPoints[0].y);
-                    for (let i = 1; i < this.resolvedPoints.length; i++) {
-                        ctx.lineTo(this.resolvedPoints[i].x, this.resolvedPoints[i].y);
-                    }
-                    ctx.lineTo(w, h);
-                    ctx.lineTo(0, h);
-                    ctx.closePath();
-                    ctx.fillStyle = this.color;
-                    ctx.globalAlpha = this.opacity;
-                    ctx.fill();
-                    ctx.globalAlpha = 1;
-                }
-            }
-
-            const mountainRanges = [];
-            const MOUNTAIN_DEFINITIONS = [{
-                points: [
-                    { x: 0, y: 0.62 }, { x: 0.08, y: 0.48 }, { x: 0.18, y: 0.55 }, { x: 0.28, y: 0.38 },
-                    { x: 0.38, y: 0.5 }, { x: 0.48, y: 0.32 }, { x: 0.58, y: 0.44 }, { x: 0.7, y: 0.35 },
-                    { x: 0.8, y: 0.5 }, { x: 0.9, y: 0.4 }, { x: 0.95, y: 0.48 }, { x: 1, y: 0.42 }
-                ],
-                color: '#0b1f15',
-                yOffset: 0.05,
-                opacity: 0.85
-            }, {
-                points: [
-                    { x: 0, y: 0.72 }, { x: 0.1, y: 0.58 }, { x: 0.22, y: 0.65 }, { x: 0.35, y: 0.5 },
-                    { x: 0.45, y: 0.6 }, { x: 0.55, y: 0.45 }, { x: 0.65, y: 0.55 }, { x: 0.78, y: 0.48 },
-                    { x: 0.88, y: 0.58 }, { x: 1, y: 0.5 }
-                ],
-                color: '#071a10',
-                yOffset: 0.08,
-                opacity: 0.9
-            }, {
-                points: [
-                    { x: 0, y: 0.8 }, { x: 0.15, y: 0.68 }, { x: 0.3, y: 0.74 }, { x: 0.5, y: 0.62 },
-                    { x: 0.7, y: 0.7 }, { x: 0.85, y: 0.64 }, { x: 1, y: 0.68 }
-                ],
-                color: '#041208',
-                yOffset: 0.1,
-                opacity: 0.95
-            }];
-
-            function initMountains() {
-                mountainRanges.length = 0;
-                MOUNTAIN_DEFINITIONS.forEach(def => {
-                    mountainRanges.push(new MountainRange(def.points, def.color, def.yOffset, def.opacity));
-                });
-            }
-
-            function renderMountains() {
-                ctxMountains.clearRect(0, 0, W, H);
-                mountainRanges.forEach(range => {
-                    range.resolvePoints(W, H);
-                    range.draw(ctxMountains, W, H);
-                });
-
-                // Ground level mist
-                const mistGrad = ctxMountains.createLinearGradient(0, H * 0.75, 0, H);
-                mistGrad.addColorStop(0, 'rgba(1,8,4,0)');
-                mistGrad.addColorStop(0.5, 'rgba(1,8,4,0.6)');
-                mistGrad.addColorStop(1, 'rgba(1,8,4,0.95)');
-                ctxMountains.fillStyle = mistGrad;
-                ctxMountains.fillRect(0, H * 0.75, W, H * 0.25);
-            }
-
-            // ============================================================
-            // ATMOSPHERIC EFFECTS (Canvas Effects Layer)
-            // ============================================================
-            class LightBeam {
-                constructor() {
-                    this.reset();
-                }
-                reset() {
-                    this.x = Math.random() * W;
-                    this.width = Math.random() * 60 + 20;
-                    this.opacity = Math.random() * 0.04 + 0.01;
-                    this.height = Math.random() * H * 0.5 + H * 0.15;
-                    this.speed = Math.random() * 0.3 + 0.05;
-                }
-                update() {
-                    this.x += this.speed;
-                    this.opacity += (Math.random() - 0.5) * 0.002;
-                    this.opacity = Math.max(0.005, Math.min(0.06, this.opacity));
-                    if (this.x > W + 100) this.reset();
-                    if (this.x < -100) { this.x = W + 100;
-                        this.reset(); }
-                }
-                draw(ctx) {
-                    const grad = ctx.createLinearGradient(this.x, H * 0.1, this.x, H * 0.1 + this.height);
-                    grad.addColorStop(0, `rgba(0,255,85,${this.opacity * 1.5})`);
-                    grad.addColorStop(0.6, `rgba(0,200,60,${this.opacity})`);
-                    grad.addColorStop(1, 'rgba(0,150,40,0)');
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(this.x - this.width / 2, H * 0.05, this.width, this.height);
-                }
-            }
-
-            const lightBeams = [];
-            const BEAM_COUNT = 8;
-
-            function initEffects() {
-                lightBeams.length = 0;
-                for (let i = 0; i < BEAM_COUNT; i++) {
-                    lightBeams.push(new LightBeam());
-                }
-            }
-
-            function renderEffects(time) {
-                ctxEffects.clearRect(0, 0, W, H);
-                lightBeams.forEach(beam => {
-                    beam.update();
-                    beam.draw(ctxEffects);
-                });
-
-                // Subtle floating mist patches
-                for (let i = 0; i < 5; i++) {
-                    const mx = (Math.sin(time * 0.02 + i * 1.3) * 0.4 + 0.5) * W;
-                    const my = H * 0.55 + Math.cos(time * 0.015 + i * 0.9) * H * 0.1;
-                    const mistGrad = ctxEffects.createRadialGradient(mx, my, 30, mx, my, 180);
-                    mistGrad.addColorStop(0, 'rgba(180,200,190,0.04)');
-                    mistGrad.addColorStop(1, 'rgba(180,200,190,0)');
-                    ctxEffects.fillStyle = mistGrad;
-                    ctxEffects.beginPath();
-                    ctxEffects.arc(mx, my, 180, 0, Math.PI * 2);
-                    ctxEffects.fill();
-                }
-            }
-
-            // ============================================================
-            // PARTICLE SYSTEM (Canvas Particles Layer)
-            // ============================================================
-            class Firefly {
-                constructor() {
-                    this.reset(true);
-                }
-                reset(initial = false) {
-                    this.x = Math.random() * W;
-                    this.y = initial ? Math.random() * H : H + Math.random() * 80;
-                    this.size = Math.random() * 3 + 1;
-                    this.speedY = -(Math.random() * 0.9 + 0.2);
-                    this.speedX = (Math.random() - 0.5) * 0.4;
-                    this.opacity = Math.random() * 0.7 + 0.2;
-                    this.pulseSpeed = Math.random() * 0.06 + 0.02;
-                    this.pulseOffset = Math.random() * Math.PI * 2;
-                    this.lifespan = Math.random() * 300 + 200;
-                    this.age = 0;
-                }
-                update(time) {
-                    this.y += this.speedY;
-                    this.x += this.speedX + Math.sin(time * 0.02 + this.pulseOffset) * 0.3;
-                    this.age++;
-                    const pulse = Math.sin(time * this.pulseSpeed + this.pulseOffset) * 0.5 + 0.5;
-                    this.currentOpacity = this.opacity * pulse;
-                    if (this.y < -20 || this.age > this.lifespan) this.reset();
-                }
-                draw(ctx) {
-                    const alpha = Math.max(0.05, this.currentOpacity);
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(0,255,85,${alpha})`;
-                    ctx.shadowBlur = this.size * 6;
-                    ctx.shadowColor = `rgba(0,255,85,${alpha * 0.8})`;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    // Inner bright core
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size * 0.35, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(200,255,220,${alpha * 1.3})`;
-                    ctx.fill();
-                }
-            }
-
-            const fireflies = [];
-            const FIREFLY_COUNT = 55;
-            // Celebration particles (used when countdown ends)
-            let celebrationParticles = [];
-            let isCelebrating = false;
-
-            function initParticles() {
-                fireflies.length = 0;
-                for (let i = 0; i < FIREFLY_COUNT; i++) {
-                    fireflies.push(new Firefly());
-                }
-            }
-
-            function createCelebrationBurst() {
-                isCelebrating = true;
-                celebrationParticles = [];
-                for (let i = 0; i < 200; i++) {
-                    celebrationParticles.push({
-                        x: W / 2,
-                        y: H / 2,
-                        vx: (Math.random() - 0.5) * 12,
-                        vy: (Math.random() - 0.5) * 12 - 4,
-                        size: Math.random() * 5 + 2,
-                        life: 1,
-                        decay: Math.random() * 0.02 + 0.008,
-                        color: Math.random() < 0.5 ? '0,255,85' : '255,255,255',
-                    });
-                }
-            }
-
-            function renderParticles(time) {
-                ctxParticles.clearRect(0, 0, W, H);
-
-                // Regular fireflies
-                fireflies.forEach(ff => {
-                    ff.update(time);
-                    ff.draw(ctxParticles);
-                });
-
-                // Celebration particles
-                if (isCelebrating && celebrationParticles.length > 0) {
-                    celebrationParticles = celebrationParticles.filter(p => p.life > 0);
-                    celebrationParticles.forEach(p => {
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.vy += 0.05; // gravity
-                        p.life -= p.decay;
-                        const alpha = p.life;
-                        ctxParticles.beginPath();
-                        ctxParticles.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-                        ctxParticles.fillStyle = `rgba(${p.color},${alpha})`;
-                        ctxParticles.shadowBlur = p.size * 8 * p.life;
-                        ctxParticles.shadowColor = `rgba(${p.color},${alpha * 0.7})`;
-                        ctxParticles.fill();
-                        ctxParticles.shadowBlur = 0;
-                    });
-                    if (celebrationParticles.length === 0) {
-                        isCelebrating = false;
-                    }
-                }
-            }
-
-            // Expose celebration function to global scope
-            window.createCelebrationBurst = createCelebrationBurst;
-
-            // ============================================================
-            // BIRD SYSTEM (Canvas Birds Layer) - Flocking Behavior
-            // ============================================================
-            class Bird {
-                constructor(flockId) {
-                    this.flockId = flockId;
-                    this.reset(true);
-                }
-                reset(initial = false) {
-                    if (initial) {
-                        this.x = Math.random() * W;
-                        this.y = H * 0.04 + Math.random() * H * 0.22;
-                    } else {
-                        this.x = -60 - Math.random() * 200;
-                        this.y = H * 0.04 + Math.random() * H * 0.22;
-                    }
-                    this.size = Math.random() * 2 + 1;
-                    this.baseSpeed = (Math.random() * 1.5 + 0.9) / this.size;
-                    this.speedX = this.baseSpeed;
-                    this.speedY = 0;
-                    this.wingTime = Math.random() * 60;
-                    this.wingSpeed = Math.random() * 0.12 + 0.06;
-                    this.yBase = this.y;
-                    this.yOscillationAmp = Math.random() * 0.4 + 0.1;
-                    this.yOscillationSpeed = Math.random() * 0.03 + 0.01;
-                }
-                update(time, flockBirds) {
-                    this.x += this.speedX;
-                    this.wingTime += this.wingSpeed;
-
-                    // Gentle Y oscillation
-                    this.y = this.yBase + Math.sin(time * this.yOscillationSpeed + this.flockId) *
-                        this.yOscillationAmp * 8;
-
-                    // Slight flock cohesion
-                    if (flockBirds && flockBirds.length > 1) {
-                        let avgY = 0;
-                        flockBirds.forEach(b => { avgY += b.y; });
-                        avgY /= flockBirds.length;
-                        this.y += (avgY - this.y) * 0.003;
-                    }
-
-                    if (this.x > W + 80) {
-                        this.reset();
-                    }
-                }
-                draw(ctx) {
-                    const wingFlap = Math.sin(this.wingTime) * 4 * this.size;
-                    const bodyLength = 7 * this.size;
-                    const wingSpan = 9 * this.size;
-
-                    ctx.fillStyle = '#0a1810';
-                    ctx.strokeStyle = '#0d2018';
-                    ctx.lineWidth = 0.6;
-
-                    // Body
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.x - bodyLength * 0.7, this.y + bodyLength * 0.15);
-
-                    // Left wing
-                    ctx.moveTo(this.x - bodyLength * 0.25, this.y);
-                    ctx.quadraticCurveTo(
-                        this.x - wingSpan * 0.5, this.y - wingFlap,
-                        this.x - wingSpan * 0.8, this.y - wingFlap * 1.3
-                    );
-                    ctx.quadraticCurveTo(
-                        this.x - bodyLength * 0.3, this.y + bodyLength * 0.1,
-                        this.x, this.y + bodyLength * 0.2
-                    );
-
-                    // Right wing
-                    ctx.moveTo(this.x - bodyLength * 0.25, this.y);
-                    ctx.quadraticCurveTo(
-                        this.x + wingSpan * 0.3, this.y - wingFlap,
-                        this.x + wingSpan * 0.7, this.y - wingFlap * 1.3
-                    );
-                    ctx.quadraticCurveTo(
-                        this.x + bodyLength * 0.15, this.y + bodyLength * 0.1,
-                        this.x, this.y + bodyLength * 0.2
-                    );
-
-                    ctx.fill();
-                    ctx.stroke();
-                }
-            }
-
-            // Create multiple flocks
-            const flocks = [];
-            const FLOCK_COUNT = 3;
-            const BIRDS_PER_FLOCK = 7;
-
-            function initBirds() {
-                flocks.length = 0;
-                for (let f = 0; f < FLOCK_COUNT; f++) {
-                    const flock = [];
-                    for (let b = 0; b < BIRDS_PER_FLOCK; b++) {
-                        flock.push(new Bird(f));
-                    }
-                    flocks.push(flock);
-                }
-            }
-
-            function renderBirds(time) {
-                ctxBirds.clearRect(0, 0, W, H);
-                flocks.forEach(flock => {
-                    flock.forEach(bird => {
-                        bird.update(time, flock);
-                        bird.draw(ctxBirds);
-                    });
-                });
-            }
-
-            // ============================================================
-            // HUD OVERLAY (Canvas HUD Layer) - Scanning & Circuit Effects
-            // ============================================================
-            function renderHUDOverlay(time) {
-                ctxHUD.clearRect(0, 0, W, H);
-
-                // Corner accent lines
-                const cornerLen = Math.min(W, H) * 0.06;
-                const margin = 15;
-                ctxHUD.strokeStyle = 'rgba(0,255,85,0.35)';
-                ctxHUD.lineWidth = 1.2;
-
-                // Top-left corner
-                ctxHUD.beginPath();
-                ctxHUD.moveTo(margin, margin + cornerLen);
-                ctxHUD.lineTo(margin, margin);
-                ctxHUD.lineTo(margin + cornerLen, margin);
-                ctxHUD.stroke();
-
-                // Top-right corner
-                ctxHUD.beginPath();
-                ctxHUD.moveTo(W - margin - cornerLen, margin);
-                ctxHUD.lineTo(W - margin, margin);
-                ctxHUD.lineTo(W - margin, margin + cornerLen);
-                ctxHUD.stroke();
-
-                // Bottom-left corner
-                ctxHUD.beginPath();
-                ctxHUD.moveTo(margin, H - margin - cornerLen);
-                ctxHUD.lineTo(margin, H - margin);
-                ctxHUD.lineTo(margin + cornerLen, H - margin);
-                ctxHUD.stroke();
-
-                // Bottom-right corner
-                ctxHUD.beginPath();
-                ctxHUD.moveTo(W - margin - cornerLen, H - margin);
-                ctxHUD.lineTo(W - margin, H - margin);
-                ctxHUD.lineTo(W - margin, H - margin - cornerLen);
-                ctxHUD.stroke();
-
-                // Subtle grid lines (very faint)
-                ctxHUD.strokeStyle = 'rgba(0,255,85,0.06)';
-                ctxHUD.lineWidth = 0.5;
-                const gridSpacing = 80;
-                for (let x = gridSpacing; x < W; x += gridSpacing) {
-                    ctxHUD.beginPath();
-                    ctxHUD.moveTo(x, 0);
-                    ctxHUD.lineTo(x, H);
-                    ctxHUD.stroke();
-                }
-                for (let y = gridSpacing; y < H; y += gridSpacing) {
-                    ctxHUD.beginPath();
-                    ctxHUD.moveTo(0, y);
-                    ctxHUD.lineTo(W, y);
-                    ctxHUD.stroke();
-                }
-
-                // Scanning dot that moves across
-                const scanX = (Math.sin(time * 0.025) * 0.5 + 0.5) * W;
-                const scanY = (Math.cos(time * 0.018) * 0.3 + 0.55) * H;
-                const scanGlow = ctxHUD.createRadialGradient(scanX, scanY, 2, scanX, scanY, 35);
-                scanGlow.addColorStop(0, 'rgba(0,255,85,0.5)');
-                scanGlow.addColorStop(1, 'rgba(0,255,85,0)');
-                ctxHUD.fillStyle = scanGlow;
-                ctxHUD.beginPath();
-                ctxHUD.arc(scanX, scanY, 35, 0, Math.PI * 2);
-                ctxHUD.fill();
-
-                ctxHUD.beginPath();
-                ctxHUD.arc(scanX, scanY, 2.5, 0, Math.PI * 2);
-                ctxHUD.fillStyle = 'rgba(0,255,85,0.8)';
-                ctxHUD.fill();
-            }
-
-            // ============================================================
-            // RESIZE HANDLER
-            // ============================================================
-            function resizeAllCanvases() {
-                W = window.innerWidth;
-                H = window.innerHeight;
-                const canvases = [canvasSky, canvasMountains, canvasEffects, canvasParticles, canvasBirds,
-                    canvasHUD
-                ];
-                canvases.forEach(c => {
-                    c.width = W;
-                    c.height = H;
-                });
-                initStars();
-                initMountains();
-                initEffects();
-                initParticles();
-                initBirds();
-            }
-
-            // ============================================================
-            // MAIN ANIMATION LOOP
-            // ============================================================
-            function animate(timestamp) {
-                globalTime = timestamp * 0.001; // Convert to seconds
-                renderSky(globalTime);
-                renderMountains();
-                renderEffects(globalTime);
-                renderParticles(globalTime);
-                renderBirds(globalTime);
-                renderHUDOverlay(globalTime);
-                animationFrameId = requestAnimationFrame(animate);
-            }
-
-            // ============================================================
-            // INITIALIZATION
-            // ============================================================
-            function initAll() {
-                resizeAllCanvases();
-                if (animationFrameId) cancelAnimationFrame(animationFrameId);
-                animationFrameId = requestAnimationFrame(animate);
-            }
-
-            // Handle resize with debounce
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    resizeAllCanvases();
-                }, 200);
-            });
-
-            // Handle orientation change on mobile
-            window.addEventListener('orientationchange', () => {
-                setTimeout(resizeAllCanvases, 300);
-            });
-
-            // Start everything
-            initAll();
-
-            // ============================================================
-            // LOGGING (for verification of universal time sync)
-            // ============================================================
-            console.log('%c🌍 UNIVERSAL COUNTDOWN INITIALIZED %c| %cTarget: ' + TARGET_DATE_ISO,
-                'color:#00ff55;font-weight:bold;',
-                '',
-                'color:#fff;');
-            console.log('%c⏱ Target UTC timestamp: %c' + targetDateUTC + ' ms',
-                'color:#aaa;', 'color:#ff0;');
-            console.log('%c📍 Your current UTC timestamp: %c' + Date.now() + ' ms',
-                'color:#aaa;', 'color:#ff0;');
-            console.log('%c✅ Countdown is globally synchronized via ISO 8601 +05:00 offset.',
-                'color:#0f0;');
-            console.log('%c   All users worldwide will see the countdown end at the same moment.',
-                'color:#0f0;');
-
-            // Prevent memory leaks on page unload
-            window.addEventListener('beforeunload', () => {
-                if (animationFrameId) cancelAnimationFrame(animationFrameId);
-                clearInterval(countdownInterval);
-            });
-
-            // ============================================================
-            // END OF JAVASCRIPT ENGINE
-            // ============================================================
-        })();
-    </script>
 </body>
-  </html>
+    </html>
